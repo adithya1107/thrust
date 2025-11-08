@@ -4,49 +4,49 @@ const Sponsors = () => {
   const sponsors = [
     {
       name: "SolidWorks",
-      logo: "/solidworks.png",
+      logo: "sponsors/solidworks.png",
       description: "SOLIDWORKS is a software used for creating 3D models and simulations, primarily for product development and engineering applications. It's a powerful tool used in industries like automotive, aerospace, and manufacturing, offering features for design, analysis, and manufacturing.",
       angle: 0,
     },
     {
       name: "Ansys",
-      logo: "/ansys.png",
+      logo: "sponsors/ansys.png",
       description: "Ansys provides engineering simulation software for product design and testing. Used across aerospace, automotive, and electronics industries for structural, fluid, electromagnetic, and systems simulation.",
       angle: 45,
     },
     {
       name: "Anaconda",
-      logo: "/anaconda.png",
+      logo: "sponsors/anaconda.png",
       description: "Anaconda is a distribution platform for Python and R programming, widely used in data science, machine learning, and scientific computing. It simplifies package management and deployment.",
       angle: 90,
     },
     {
       name: "Microplacer",
-      logo: "/microplacer.png",
+      logo: "sponsors/microplacer.png",
       description: "Microplacer specializes in precision microelectronics placement and assembly solutions for aerospace and defense applications, delivering high-reliability components.",
       angle: 135,
     },
     {
       name: "Precision",
-      logo: "/precision.png",
+      logo: "sponsors/precision.png",
       description: "Precision provides advanced manufacturing solutions and components for aerospace applications, focusing on high-accuracy machining and assembly processes.",
       angle: 180,
     },
     {
       name: "ROBU.IN",
-      logo: "/robu.png",
+      logo: "sponsors/robu.png",
       description: "ROBU.IN is an online platform offering robotics and electronics components, serving makers, hobbyists, and professionals in India with a wide range of sensors, controllers, and development boards.",
       angle: 225,
     },
     {
       name: "Babaji shivram",
-      logo: "/babaji.png",
+      logo: "sponsors/babaji.png",
       description: "Babaji Shivram specializes in aerospace components and systems integration, providing innovative solutions for satellite and spacecraft development.",
       angle: 270,
     },
     {
       name: "Sensomatic",
-      logo: "/sensomatic.png",
+      logo: "sponsors/sensomatic.png",
       description: "Sensomatic develops advanced sensor technologies for aerospace applications, offering high-precision measurement and monitoring systems for critical mission parameters.",
       angle: 315,
     },
@@ -95,7 +95,7 @@ const Sponsors = () => {
               Partnership Excellence
             </span>
           </div>
-          <h2 className="text-4xl md:text-6xl font-bold mb-6" style={{ fontFamily: 'Orbitron, sans-serif' }}>
+          <h2 className="text-4xl md:text-5xl font-bold mb-6" style={{ fontFamily: 'Orbitron, sans-serif' }}>
             Our <span className="text-blue-600">Sponsors</span>
           </h2>
           <p className="text-base md:text-lg text-gray-400 max-w-3xl mx-auto" style={{ fontFamily: 'Rajdhani, sans-serif' }}>
@@ -177,19 +177,6 @@ const Sponsors = () => {
                 
               </div>
             </div>
-          </div>
-        </div>
-
-        {/* Become a Partner CTA */}
-        <div className="relative mt-16 max-w-4xl mx-auto">
-          <div className="bg-gradient-to-br from-gray-900/50 to-black/50 backdrop-blur-sm border border-gray-800/50 rounded-3xl p-8 md:p-12 text-center">
-            <h3 className="text-2xl md:text-3xl font-bold mb-4" style={{ fontFamily: 'Orbitron, sans-serif' }}>Become a Partner</h3>
-            <p className="text-gray-400 max-w-2xl mx-auto mb-8" style={{ fontFamily: 'Rajdhani, sans-serif' }}>
-              Join our mission to advance aerospace technology and shape the future of space exploration.
-            </p>
-            <button className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-semibold transition-all transform hover:scale-105 shadow-[0_0_25px_rgba(37,99,235,0.3)] hover:shadow-[0_0_35px_rgba(37,99,235,0.5)]" style={{ fontFamily: 'Rajdhani, sans-serif' }}>
-              Partnership Opportunities
-            </button>
           </div>
         </div>
       </div>

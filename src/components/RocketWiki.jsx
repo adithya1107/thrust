@@ -1,10 +1,46 @@
 import React, { useState, useEffect } from 'react';
-import { Rocket, Zap, Gauge, Layers, Info, ChevronRight, Search, Book, Star, TrendingUp, ArrowLeft } from 'lucide-react';
+import { Rocket, Zap, Gauge, Layers, Info, ChevronRight, Search, Book, Star, TrendingUp, Plus, X, Upload, Lock, Eye, Calendar, User } from 'lucide-react';
+import { createClient } from '@supabase/supabase-js';
+import Header from './Header';
+import Footer from './Footer';
+
+// Initialize Supabase client
+const supabaseUrl = 'https://lpmztexkqymllhssfwgz.supabase.co';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxwbXp0ZXhrcXltbGxoc3Nmd2d6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI1OTgwNDQsImV4cCI6MjA3ODE3NDA0NH0.fgcj6ftOrbXkSGdaOrJjHbZacK2txMNajDSrapfNTrw';
+
+const supabase = createClient(supabaseUrl, supabaseKey);
+
+const ADMIN_PASSWORD = '123'; // Change this to your secure password
 
 const RocketWiki = () => {
+  const [rockets, setRockets] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [selectedRocket, setSelectedRocket] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [activeCategory, setActiveCategory] = useState('all');
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [showPasswordPrompt, setShowPasswordPrompt] = useState(false);
+  const [password, setPassword] = useState('');
+  const [authenticated, setAuthenticated] = useState(false);
+  const [uploadingImage, setUploadingImage] = useState(false);
+
+  // Form state
+  const [formData, setFormData] = useState({
+    name: '',
+    category: 'competition',
+    tagline: '',
+    description: '',
+    height: '',
+    diameter: '',
+    weight: '',
+    apogee: '',
+    motor: '',
+    features: ['', '', '', '', ''],
+    status: 'Development',
+    launch_date: '',
+    author_name: '',
+    image_url: ''
+  });
 
   // Font loading
   useEffect(() => {
@@ -14,152 +50,123 @@ const RocketWiki = () => {
     document.head.appendChild(link);
   }, []);
 
-  const rockets = [
-    {
-      id: 1,
-      name: 'AgniAstra',
-      category: 'competition',
-      tagline: 'High-Altitude Champion',
-      description: 'AgniAstra is our flagship high-altitude rocket designed for competitive launches. Built with advanced composite materials and featuring a dual-stage propulsion system.',
-      specs: {
-        height: '3.2m',
-        diameter: '15cm',
-        weight: '25kg',
-        apogee: '10,000ft',
-        motor: 'L-Class Solid',
-      },
-      features: [
-        'Carbon fiber airframe',
-        'Dual deployment system',
-        'GPS tracking module',
-        'Custom avionics bay',
-        'Aerodynamic fin design'
-      ],
-      status: 'Active',
-      launchDate: 'March 2024',
-      image: '/placeholder-rocket.png'
-    },
-    {
-      id: 2,
-      name: 'Altair',
-      category: 'research',
-      tagline: 'Atmospheric Research Platform',
-      description: 'Altair is designed for atmospheric research and carries scientific payloads to study upper atmosphere conditions. Features modular payload bay.',
-      specs: {
-        height: '2.8m',
-        diameter: '12cm',
-        weight: '18kg',
-        apogee: '8,000ft',
-        motor: 'K-Class Solid',
-      },
-      features: [
-        'Modular payload system',
-        'Real-time telemetry',
-        'Temperature sensors',
-        'Pressure monitoring',
-        'Data logging capability'
-      ],
-      status: 'Development',
-      launchDate: 'June 2024',
-      image: '/placeholder-rocket.png'
-    },
-    {
-      id: 3,
-      name: 'Rayquaza',
-      category: 'experimental',
-      tagline: 'Next-Gen Propulsion',
-      description: 'Rayquaza is our experimental platform testing hybrid propulsion systems and advanced recovery mechanisms for future rocket designs.',
-      specs: {
-        height: '2.5m',
-        diameter: '10cm',
-        weight: '15kg',
-        apogee: '6,000ft',
-        motor: 'Hybrid',
-      },
-      features: [
-        'Hybrid propulsion system',
-        '3D printed components',
-        'Advanced recovery system',
-        'Thrust vectoring capability',
-        'Modular design'
-      ],
-      status: 'Testing',
-      launchDate: 'August 2024',
-      image: '/placeholder-rocket.png'
-    },
-    {
-      id: 4,
-      name: 'Phoenix',
-      category: 'competition',
-      tagline: 'Speed Demon',
-      description: 'Phoenix focuses on maximum velocity and rapid ascent profiles. Optimized for speed records with minimal drag coefficient.',
-      specs: {
-        height: '2.2m',
-        diameter: '8cm',
-        weight: '12kg',
-        apogee: '7,500ft',
-        motor: 'J-Class Solid',
-      },
-      features: [
-        'Streamlined aerodynamics',
-        'Lightweight construction',
-        'High-speed recovery',
-        'Minimal drag design',
-        'Competition optimized'
-      ],
-      status: 'Active',
-      launchDate: 'January 2024',
-      image: '/placeholder-rocket.png'
-    },
-    {
-      id: 5,
-      name: 'Arya',
-      category: 'research',
-      tagline: 'Educational Pioneer',
-      description: 'Arya serves as our educational platform for training new team members and testing fundamental rocketry concepts.',
-      specs: {
-        height: '1.8m',
-        diameter: '7cm',
-        weight: '8kg',
-        apogee: '4,000ft',
-        motor: 'H-Class Solid',
-      },
-      features: [
-        'Educational design',
-        'Easy assembly',
-        'Safety focused',
-        'Training platform',
-        'Cost effective'
-      ],
-      status: 'Active',
-      launchDate: 'September 2023',
-      image: '/placeholder-rocket.png'
-    },
-    {
-      id: 6,
-      name: 'Vyom',
-      category: 'experimental',
-      tagline: 'Space Aspirant',
-      description: 'Vyom represents our most ambitious project, aiming to reach the Karman line with advanced multi-stage propulsion.',
-      specs: {
-        height: '4.5m',
-        diameter: '20cm',
-        weight: '45kg',
-        apogee: '100km',
-        motor: 'Multi-Stage',
-      },
-      features: [
-        'Multi-stage separation',
-        'Advanced guidance',
-        'Satellite deployment',
-        'Space-grade materials',
-        'Autonomous systems'
-      ],
-      status: 'Development',
-      launchDate: 'TBD 2025',
-      image: '/placeholder-rocket.png'
+  // Fetch rockets from Supabase
+  useEffect(() => {
+    fetchRockets();
+  }, []);
+
+  const fetchRockets = async () => {
+    try {
+      setLoading(true);
+      const { data, error } = await supabase
+        .from('rockets')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      setRockets(data || []);
+    } catch (error) {
+      console.error('Error fetching rockets:', error);
+    } finally {
+      setLoading(false);
     }
-  ];
+  };
+
+  const handlePasswordSubmit = () => {
+    if (password === ADMIN_PASSWORD) {
+      setAuthenticated(true);
+      setShowPasswordPrompt(false);
+      setShowAddModal(true);
+      setPassword('');
+    } else {
+      alert('Incorrect password!');
+      setPassword('');
+    }
+  };
+
+  const handleImageUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    try {
+      setUploadingImage(true);
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${Math.random()}.${fileExt}`;
+      const filePath = `${fileName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('rocket-images')
+        .upload(filePath, file);
+
+      if (uploadError) throw uploadError;
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('rocket-images')
+        .getPublicUrl(filePath);
+
+      setFormData({ ...formData, image_url: publicUrl });
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      alert('Failed to upload image');
+    } finally {
+      setUploadingImage(false);
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const rocketData = {
+        name: formData.name,
+        category: formData.category,
+        tagline: formData.tagline,
+        description: formData.description,
+        specs: {
+          height: formData.height,
+          diameter: formData.diameter,
+          weight: formData.weight,
+          apogee: formData.apogee,
+          motor: formData.motor
+        },
+        features: formData.features.filter(f => f.trim() !== ''),
+        status: formData.status,
+        launch_date: formData.launch_date,
+        author_name: formData.author_name,
+        image_url: formData.image_url || 'black_logo.svg'
+      };
+
+      const { error } = await supabase
+        .from('rockets')
+        .insert([rocketData]);
+
+      if (error) throw error;
+
+      alert('Rocket added successfully!');
+      setShowAddModal(false);
+      setAuthenticated(false);
+      setFormData({
+        name: '',
+        category: 'competition',
+        tagline: '',
+        description: '',
+        height: '',
+        diameter: '',
+        weight: '',
+        apogee: '',
+        motor: '',
+        features: ['', '', '', '', ''],
+        status: 'Development',
+        launch_date: '',
+        author_name: '',
+        image_url: ''
+      });
+      fetchRockets();
+    } catch (error) {
+      console.error('Error adding rocket:', error);
+      alert('Failed to add rocket');
+    }
+  };
 
   const categories = [
     { id: 'all', name: 'All Rockets', icon: Rocket },
@@ -186,6 +193,7 @@ const RocketWiki = () => {
 
   return (
     <div className="min-h-screen bg-black text-white">
+      <Header />
       {/* Hero Section */}
       <section className="relative py-20 px-4 overflow-hidden">
         <div className="absolute inset-0">
@@ -194,12 +202,18 @@ const RocketWiki = () => {
         </div>
         <div className="absolute inset-0 bg-[linear-gradient(rgba(59,130,246,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(59,130,246,0.03)_1px,transparent_1px)] bg-[size:50px_50px]" />
 
-        <div className="relative max-w-7xl mx-auto text-center">
-          <div className="inline-block mb-6">
-            <span className="px-6 py-3 rounded-full bg-gradient-to-r from-blue-600/20 to-blue-600/20 text-blue-400 text-sm border border-blue-600/30 backdrop-blur-sm" style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 500, letterSpacing: '0.05em' }}>
-              KNOWLEDGE BASE
-            </span>
+        <div className="relative max-w-7xl mx-auto text-center pt-2">
+          <div className="flex justify-end mb-4">
+            <button
+              onClick={() => setShowPasswordPrompt(true)}
+              className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl transition-all duration-300 flex items-center gap-2 shadow-lg shadow-blue-600/30"
+              style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 600 }}
+            >
+              <Plus size={20} />
+              Add New Article
+            </button>
           </div>
+
           <h1 className="text-5xl md:text-7xl font-bold mb-6" style={{ fontFamily: 'Orbitron, sans-serif' }}>
             Rocket <span className="text-blue-600">Encyclopedia</span>
           </h1>
@@ -208,7 +222,7 @@ const RocketWiki = () => {
           </p>
 
           {/* Search Bar */}
-          <div className="max-w-2xl mx-auto mb-12">
+          <div className="max-w-2xl mx-auto mb-8">
             <div className="relative">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
               <input
@@ -221,91 +235,91 @@ const RocketWiki = () => {
               />
             </div>
           </div>
-
-          {/* Category Filter */}
-          <div className="flex flex-wrap justify-center gap-3 mb-12">
-            {categories.map(category => {
-              const Icon = category.icon;
-              return (
-                <button
-                  key={category.id}
-                  onClick={() => setActiveCategory(category.id)}
-                  className={`flex items-center gap-2 px-6 py-3 rounded-xl transition-all duration-300 ${
-                    activeCategory === category.id
-                      ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/30'
-                      : 'bg-white/5 text-gray-400 hover:bg-white/10 hover:text-white border border-white/10'
-                  }`}
-                  style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 500 }}
-                >
-                  <Icon size={18} />
-                  {category.name}
-                </button>
-              );
-            })}
-          </div>
         </div>
       </section>
 
       {/* Rockets Grid */}
       <section className="relative py-12 px-4">
         <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filteredRockets.map((rocket) => (
-              <div
-                key={rocket.id}
-                className="group relative bg-gradient-to-br from-gray-900/80 to-black/80 backdrop-blur-xl border border-gray-800/50 rounded-3xl overflow-hidden hover:border-blue-600/50 transition-all duration-500 cursor-pointer hover:scale-105 hover:shadow-2xl hover:shadow-blue-600/20"
-                onClick={() => setSelectedRocket(rocket)}
-              >
-                {/* Status Badge */}
-                <div className="absolute top-4 right-4 z-10">
-                  <span className={`px-3 py-1 rounded-full text-xs border ${getStatusColor(rocket.status)}`} style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 500 }}>
-                    {rocket.status}
-                  </span>
-                </div>
-
-                {/* Image Placeholder */}
-                <div className="relative h-48 bg-gradient-to-br from-blue-600/20 to-blue-800/20 flex items-center justify-center border-b border-gray-800/50">
-                  <Rocket size={64} className="text-blue-400 opacity-50 group-hover:scale-110 transition-transform duration-500" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
-                </div>
-
-                {/* Content */}
-                <div className="p-6">
-                  <h3 className="text-2xl font-bold mb-2" style={{ fontFamily: 'Orbitron, sans-serif' }}>
-                    {rocket.name}
-                  </h3>
-                  <p className="text-blue-400 text-sm mb-3" style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 500 }}>
-                    {rocket.tagline}
-                  </p>
-                  <p className="text-gray-400 text-sm mb-4 line-clamp-3" style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 400 }}>
-                    {rocket.description}
-                  </p>
-
-                  {/* Quick Stats */}
-                  <div className="grid grid-cols-2 gap-3 mb-4">
-                    <div className="bg-white/5 rounded-lg p-3 border border-white/10">
-                      <p className="text-xs text-gray-500 mb-1" style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 400 }}>Height</p>
-                      <p className="text-white font-bold" style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 600 }}>{rocket.specs.height}</p>
-                    </div>
-                    <div className="bg-white/5 rounded-lg p-3 border border-white/10">
-                      <p className="text-xs text-gray-500 mb-1" style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 400 }}>Apogee</p>
-                      <p className="text-white font-bold" style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 600 }}>{rocket.specs.apogee}</p>
-                    </div>
+          {loading ? (
+            <div className="text-center py-20">
+              <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-600 mx-auto" />
+              <p className="text-gray-400 mt-4" style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 400 }}>
+                Loading rockets...
+              </p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {filteredRockets.map((rocket) => (
+                <div
+                  key={rocket.id}
+                  className="group relative bg-gradient-to-br from-gray-900/80 to-black/80 backdrop-blur-xl border border-gray-800/50 rounded-3xl overflow-hidden hover:border-blue-600/50 transition-all duration-500 cursor-pointer hover:scale-105 hover:shadow-2xl hover:shadow-blue-600/20"
+                  onClick={() => setSelectedRocket(rocket)}
+                >
+                  {/* Image */}
+                  <div className="relative h-48 bg-gradient-to-br from-blue-600/20 to-blue-800/20 flex items-center justify-center border-b border-gray-800/50 overflow-hidden">
+                    <img 
+                      src={rocket.image_url || 'black_logo.svg'} 
+                      alt={rocket.name} 
+                      className="w-full h-full object-cover opacity-90"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
                   </div>
 
-                  {/* View Details Button */}
-                  <button className="w-full bg-blue-600/20 hover:bg-blue-600 text-blue-400 hover:text-white py-3 rounded-xl transition-all duration-300 flex items-center justify-center gap-2 border border-blue-600/30" style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 600 }}>
-                    View Details
-                    <ChevronRight size={18} />
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
+                  {/* Content */}
+                  <div className="p-6">
+                    <div className="flex items-start justify-between mb-2">
+                      <h3 className="text-2xl font-bold" style={{ fontFamily: 'Orbitron, sans-serif' }}>
+                        {rocket.name}
+                      </h3>
+                      <span className={`px-3 py-1 rounded-full text-xs border ${getStatusColor(rocket.status)}`} style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 500 }}>
+                        {rocket.status}
+                      </span>
+                    </div>
+                    <p className="text-blue-400 text-sm mb-3" style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 500 }}>
+                      {rocket.tagline}
+                    </p>
+                    <p className="text-gray-400 text-sm mb-4 line-clamp-3" style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 400 }}>
+                      {rocket.description}
+                    </p>
 
-          {filteredRockets.length === 0 && (
+                    {/* Quick Stats */}
+                    <div className="grid grid-cols-2 gap-3 mb-4">
+                      <div className="bg-white/5 rounded-lg p-3 border border-white/10">
+                        <p className="text-xs text-gray-500 mb-1" style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 400 }}>Height</p>
+                        <p className="text-white font-bold" style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 600 }}>{rocket.specs.height}</p>
+                      </div>
+                      <div className="bg-white/5 rounded-lg p-3 border border-white/10">
+                        <p className="text-xs text-gray-500 mb-1" style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 400 }}>Apogee</p>
+                        <p className="text-white font-bold" style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 600 }}>{rocket.specs.apogee}</p>
+                      </div>
+                    </div>
+
+                    {/* Author & Date */}
+                    <div className="flex items-center gap-4 text-xs text-gray-500 mb-4" style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 400 }}>
+                      <div className="flex items-center gap-1">
+                        <User size={14} />
+                        {rocket.author_name}
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <Calendar size={14} />
+                        {rocket.launch_date}
+                      </div>
+                    </div>
+
+                    {/* View Details Button */}
+                    <button className="w-full bg-blue-600/20 hover:bg-blue-600 text-blue-400 hover:text-white py-3 rounded-xl transition-all duration-300 flex items-center justify-center gap-2 border border-blue-600/30" style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 600 }}>
+                      View Details
+                      <ChevronRight size={18} />
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {filteredRockets.length === 0 && !loading && (
             <div className="text-center py-20">
-              <Rocket size={64} className="mx-auto mb-4 text-gray-600" />
               <p className="text-gray-400 text-lg" style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 400 }}>
                 No rockets found matching your search
               </p>
@@ -313,6 +327,294 @@ const RocketWiki = () => {
           )}
         </div>
       </section>
+
+      {/* Password Prompt Modal */}
+      {showPasswordPrompt && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-sm" onClick={() => setShowPasswordPrompt(false)}>
+          <div className="relative max-w-md w-full bg-gradient-to-br from-gray-900 to-black border border-blue-600/30 rounded-3xl p-8" onClick={(e) => e.stopPropagation()}>
+            <button
+              onClick={() => setShowPasswordPrompt(false)}
+              className="absolute top-4 right-4 w-8 h-8 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center transition-colors"
+            >
+              <X size={20} />
+            </button>
+
+            <div className="text-center mb-6">
+              <div className="w-16 h-16 bg-blue-600/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Lock size={32} className="text-blue-600" />
+              </div>
+              <h2 className="text-2xl font-bold mb-2" style={{ fontFamily: 'Orbitron, sans-serif' }}>
+                Authentication Required
+              </h2>
+              <p className="text-gray-400" style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 400 }}>
+                Enter the admin password to add a new rocket
+              </p>
+            </div>
+
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              onKeyPress={(e) => e.key === 'Enter' && handlePasswordSubmit()}
+              placeholder="Enter password"
+              className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 mb-4 focus:border-blue-600 focus:outline-none transition-colors text-white placeholder-gray-500"
+              style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 400 }}
+            />
+
+            <button
+              onClick={handlePasswordSubmit}
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl transition-all duration-300"
+              style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 600 }}
+            >
+              Submit
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Add Rocket Modal */}
+      {showAddModal && authenticated && (
+        <div className="fixed inset-0 z-50 flex items-start justify-center p-4 bg-black/90 backdrop-blur-sm overflow-y-auto">
+          <div className="relative max-w-4xl w-full my-8 bg-gradient-to-br from-gray-900 to-black border border-blue-600/30 rounded-3xl p-8 max-h-[calc(100vh-4rem)] overflow-y-auto">
+            <button
+              onClick={() => {
+                setShowAddModal(false);
+                setAuthenticated(false);
+              }}
+              className="absolute top-6 right-6 w-10 h-10 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center transition-colors"
+            >
+              <X size={20} />
+            </button>
+
+            <h2 className="text-3xl font-bold mb-6" style={{ fontFamily: 'Orbitron, sans-serif' }}>
+              Add an Article
+            </h2>
+
+            <form onSubmit={handleSubmit} className="space-y-6">
+              {/* Basic Info */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm text-gray-400 mb-2" style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 400 }}>Rocket Name *</label>
+                  <input
+                    type="text"
+                    required
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:border-blue-600 focus:outline-none transition-colors text-white"
+                    style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 400 }}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm text-gray-400 mb-2" style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 400 }}>Category *</label>
+                  <select
+                    value={formData.category}
+                    onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:border-blue-600 focus:outline-none transition-colors text-white"
+                    style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 400 }}
+                  >
+                    <option value="competition">Competition</option>
+                    <option value="research">Research</option>
+                    <option value="experimental">Experimental</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm text-gray-400 mb-2" style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 400 }}>Tagline *</label>
+                <input
+                  type="text"
+                  required
+                  value={formData.tagline}
+                  onChange={(e) => setFormData({ ...formData, tagline: e.target.value })}
+                  className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:border-blue-600 focus:outline-none transition-colors text-white"
+                  style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 400 }}
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm text-gray-400 mb-2" style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 400 }}>Description *</label>
+                <textarea
+                  required
+                  rows={4}
+                  value={formData.description}
+                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                  className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:border-blue-600 focus:outline-none transition-colors text-white resize-none"
+                  style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 400 }}
+                />
+              </div>
+
+              {/* Specifications */}
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                <div>
+                  <label className="block text-sm text-gray-400 mb-2" style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 400 }}>Height *</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="e.g., 3.2m"
+                    value={formData.height}
+                    onChange={(e) => setFormData({ ...formData, height: e.target.value })}
+                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:border-blue-600 focus:outline-none transition-colors text-white"
+                    style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 400 }}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm text-gray-400 mb-2" style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 400 }}>Diameter *</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="e.g., 15cm"
+                    value={formData.diameter}
+                    onChange={(e) => setFormData({ ...formData, diameter: e.target.value })}
+                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:border-blue-600 focus:outline-none transition-colors text-white"
+                    style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 400 }}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm text-gray-400 mb-2" style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 400 }}>Weight *</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="e.g., 25kg"
+                    value={formData.weight}
+                    onChange={(e) => setFormData({ ...formData, weight: e.target.value })}
+                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:border-blue-600 focus:outline-none transition-colors text-white"
+                    style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 400 }}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm text-gray-400 mb-2" style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 400 }}>Apogee *</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="e.g., 10,000ft"
+                    value={formData.apogee}
+                    onChange={(e) => setFormData({ ...formData, apogee: e.target.value })}
+                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:border-blue-600 focus:outline-none transition-colors text-white"
+                    style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 400 }}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm text-gray-400 mb-2" style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 400 }}>Motor *</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="e.g., L-Class Solid"
+                    value={formData.motor}
+                    onChange={(e) => setFormData({ ...formData, motor: e.target.value })}
+                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:border-blue-600 focus:outline-none transition-colors text-white"
+                    style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 400 }}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm text-gray-400 mb-2" style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 400 }}>Status *</label>
+                  <select
+                    value={formData.status}
+                    onChange={(e) => setFormData({ ...formData, status: e.target.value })}
+                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:border-blue-600 focus:outline-none transition-colors text-white"
+                    style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 400 }}
+                  >
+                    <option value="Active">Active</option>
+                    <option value="Development">Development</option>
+                    <option value="Testing">Testing</option>
+                  </select>
+                </div>
+              </div>
+
+              {/* Features */}
+              <div>
+                <label className="block text-sm text-gray-400 mb-2" style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 400 }}>Key Features (5 features)</label>
+                {formData.features.map((feature, index) => (
+                  <input
+                    key={index}
+                    type="text"
+                    value={feature}
+                    onChange={(e) => {
+                      const newFeatures = [...formData.features];
+                      newFeatures[index] = e.target.value;
+                      setFormData({ ...formData, features: newFeatures });
+                    }}
+                    placeholder={`Feature ${index + 1}`}
+                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:border-blue-600 focus:outline-none transition-colors text-white mb-2"
+                    style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 400 }}
+                  />
+                ))}
+              </div>
+
+              {/* Additional Info */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm text-gray-400 mb-2" style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 400 }}>Launch Date *</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="e.g., March 2024"
+                    value={formData.launch_date}
+                    onChange={(e) => setFormData({ ...formData, launch_date: e.target.value })}
+                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:border-blue-600 focus:outline-none transition-colors text-white"
+                    style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 400 }}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm text-gray-400 mb-2" style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 400 }}>Author Name *</label>
+                  <input
+                    type="text"
+                    required
+                    value={formData.author_name}
+                    onChange={(e) => setFormData({ ...formData, author_name: e.target.value })}
+                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:border-blue-600 focus:outline-none transition-colors text-white"
+                    style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 400 }}
+                  />
+                </div>
+              </div>
+
+              {/* Image Upload */}
+              <div>
+                <label className="block text-sm text-gray-400 mb-2" style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 400 }}>Cover Image</label>
+                <div className="relative">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageUpload}
+                    className="hidden"
+                    id="image-upload"
+                  />
+                  <label
+                    htmlFor="image-upload"
+                    className="flex items-center justify-center w-full bg-white/5 border border-white/10 rounded-xl px-4 py-8 hover:bg-white/10 transition-colors cursor-pointer"
+                  >
+                    {uploadingImage ? (
+                      <div className="flex items-center gap-2 text-blue-400">
+                        <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-400" />
+                        <span style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 400 }}>Uploading...</span>
+                      </div>
+                    ) : formData.image_url ? (
+                      <div className="text-center">
+                        <img src={formData.image_url} alt="Preview" className="max-h-32 mx-auto mb-2 rounded-lg" />
+                        <span className="text-green-400" style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 400 }}>Image uploaded successfully</span>
+                      </div>
+                    ) : (
+                      <div className="text-center">
+                        <Upload size={32} className="mx-auto mb-2 text-gray-400" />
+                        <span className="text-gray-400" style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 400 }}>Click to upload cover image</span>
+                      </div>
+                    )}
+                  </label>
+                </div>
+              </div>
+
+              {/* Submit Button */}
+              <button
+                type="submit"
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white py-4 rounded-xl transition-all duration-300 flex items-center justify-center gap-2"
+                style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 600 }}
+              >
+                <Rocket size={20} />
+                Publish Rocket
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
 
       {/* Detailed Modal */}
       {selectedRocket && (
@@ -322,12 +624,12 @@ const RocketWiki = () => {
               onClick={() => setSelectedRocket(null)}
               className="absolute top-6 right-6 w-10 h-10 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center transition-colors z-10"
             >
-              <span className="text-2xl text-white">×</span>
+              <X size={24} />
             </button>
 
             {/* Header */}
-            <div className="relative h-64 bg-gradient-to-br from-blue-600/30 to-blue-800/30 flex items-center justify-center border-b border-gray-800/50">
-              <Rocket size={96} className="text-blue-400 opacity-70" />
+            <div className="relative h-64 bg-gradient-to-br from-blue-600/30 to-blue-800/30 flex items-center justify-center border-b border-gray-800/50 overflow-hidden">
+              <img src={selectedRocket.image_url || 'black_logo.svg'} alt={selectedRocket.name} className="w-full h-full object-cover opacity-90" />
               <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent" />
               <div className="absolute bottom-6 left-6">
                 <span className={`px-4 py-2 rounded-full text-sm border ${getStatusColor(selectedRocket.status)} inline-block mb-3`} style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 500 }}>
@@ -353,9 +655,16 @@ const RocketWiki = () => {
                 <p className="text-gray-300 text-lg leading-relaxed" style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 400 }}>
                   {selectedRocket.description}
                 </p>
-                <p className="text-gray-500 mt-4" style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 400 }}>
-                  Launch Date: {selectedRocket.launchDate}
-                </p>
+                <div className="flex items-center gap-6 mt-4 text-sm text-gray-500" style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 400 }}>
+                  <div className="flex items-center gap-2">
+                    <User size={16} />
+                    <span>Author: {selectedRocket.author_name}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Calendar size={16} />
+                    <span>Launch Date: {selectedRocket.launch_date}</span>
+                  </div>
+                </div>
               </div>
 
               {/* Technical Specifications */}
@@ -393,6 +702,7 @@ const RocketWiki = () => {
           </div>
         </div>
       )}
+      <Footer />
     </div>
   );
 };

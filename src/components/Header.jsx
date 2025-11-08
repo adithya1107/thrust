@@ -1,7 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { Menu, X, ChevronDown, Rocket } from 'lucide-react';
+import { Menu, X, ChevronDown } from 'lucide-react';
 
-const Header = () => {
+const Header = ({ 
+  onNavigateToTeam, 
+  onNavigateToAlumni, 
+  onNavigateToJoin,
+  onNavigateToRocketWiki,
+  onScrollToSection,
+  onNavigateHome,
+  currentPage = 'home'
+}) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(null);
   const [isScrolled, setIsScrolled] = useState(false);
@@ -46,7 +54,55 @@ const Header = () => {
     'Vyom'
   ];
 
-  const alumniYears = ['2024', '2023', '2022', '2021', '2020', '2019', '2018'];
+  const alumniYears = ['2025', '2024', '2023', '2022', '2021', '2020', '2019', '2018'];
+
+  const handleAlumniClick = () => {
+    setDropdownOpen(null);
+    setIsMenuOpen(false);
+    if (onNavigateToAlumni) {
+      onNavigateToAlumni();
+    }
+  };
+
+  const handleTeamClick = () => {
+    setIsMenuOpen(false);
+    if (onNavigateToTeam) {
+      onNavigateToTeam();
+    }
+  };
+
+  const handleJoinClick = () => {
+    setIsMenuOpen(false);
+    if (onNavigateToJoin) {
+      onNavigateToJoin();
+    }
+  };
+
+  const handleRocketWikiClick = () => {
+    setIsMenuOpen(false);
+    if (onNavigateToRocketWiki) {
+      onNavigateToRocketWiki();
+    }
+  };
+
+  // Universal section click handler - navigates home first if needed
+  const handleSectionClick = (e, sectionId) => {
+    e.preventDefault();
+    setDropdownOpen(null);
+    setIsMenuOpen(false);
+    
+    // If we're on the home page, just scroll to section
+    if (currentPage === 'home') {
+      if (onScrollToSection) {
+        onScrollToSection(sectionId);
+      }
+    } else {
+      // If we're on another page, navigate home first, then scroll
+      if (onNavigateHome) {
+        onNavigateHome(sectionId);
+      }
+    }
+  };
 
   return (
     <header className={`fixed top-0 w-full z-50 transition-all duration-500 ${
@@ -54,122 +110,81 @@ const Header = () => {
         ? 'bg-black/95 backdrop-blur-xl border-b border-blue-600/20 shadow-lg shadow-blue-600/5' 
         : 'bg-black/80 backdrop-blur-md border-b border-white/5'
     }`}>
-      <div className="container mx-auto px-8 py-6">
+      <div className="container mx-auto px-8 py-4">
         <div className="flex items-center justify-between">
           {/* Logo */}
-          <div className="flex items-center gap-3 group">
-            <span className="text-3xl font-bold bg-gradient-to-r from-white via-blue-100 to-white bg-clip-text text-transparent" style={{ fontFamily: 'Orbitron, sans-serif' }}>
-              thrustMIT
-            </span>
-          </div>
+          <button 
+            onClick={(e) => handleSectionClick(e, 'home')}
+            className="flex items-center gap-3 group"
+          >
+            <img 
+              src="/logo.png" 
+              alt="thrustMIT Logo" 
+              className="h-12 w-auto transition-transform duration-300 group-hover:scale-110"
+            />
+          </button>
           
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center gap-2" style={{ fontFamily: 'Rajdhani, sans-serif' }}>
-            <a href="#home" className="px-5 py-3 text-base font-medium text-white/90 hover:text-white hover:bg-white/5 rounded-lg transition-all duration-200">
+            <button 
+              onClick={(e) => handleSectionClick(e, 'home')}
+              className="px-5 py-3 text-base font-medium text-white/90 hover:text-white hover:bg-white/5 rounded-lg transition-all duration-200"
+            >
               Home
-            </a>
-            <a href="#about" className="px-5 py-3 text-base font-medium text-white/90 hover:text-white hover:bg-white/5 rounded-lg transition-all duration-200">
+            </button>
+            <button 
+              onClick={(e) => handleSectionClick(e, 'about')}
+              className="px-5 py-3 text-base font-medium text-white/90 hover:text-white hover:bg-white/5 rounded-lg transition-all duration-200"
+            >
               About
-            </a>
-            <a href="#subsystems" className="px-5 py-3 text-base font-medium text-white/90 hover:text-white hover:bg-white/5 rounded-lg transition-all duration-200">
+            </button>
+            <button 
+              onClick={(e) => handleSectionClick(e, 'subsystems')}
+              className="px-5 py-3 text-base font-medium text-white/90 hover:text-white hover:bg-white/5 rounded-lg transition-all duration-200"
+            >
               Subsystems
-            </a>
+            </button>
 
-            {/* Projects Dropdown */}
-            <div className="relative dropdown">
-              <button
-                onClick={() => toggleDropdown('projects')}
-                className="flex items-center gap-1.5 px-5 py-3 text-base font-medium text-white/90 hover:text-white hover:bg-white/5 rounded-lg transition-all duration-200 focus:outline-none group"
-              >
-                Projects 
-                <ChevronDown size={18} className={`transition-transform duration-300 ${dropdownOpen === 'projects' ? 'rotate-180' : ''}`} />
-              </button>
-              {dropdownOpen === 'projects' && (
-                <div className="absolute left-0 mt-2 w-64 backdrop-blur-xl bg-black/30 border border-blue-600/20 shadow-2xl shadow-blue-600/10 rounded-2xl py-2 z-10 animate-in fade-in slide-in-from-top-2 duration-200">
-                  {projects.map((project, index) => (
-                    <a 
-                      key={project} 
-                      href={`#${project.toLowerCase()}`}
-                      className="block px-4 py-2.5 mx-2 my-1 text-sm font-medium text-white/80 hover:text-white hover:bg-gradient-to-r hover:from-blue-600/20 hover:to-blue-700/20 rounded-xl transition-all duration-200 group"
-                      style={{ animationDelay: `${index * 30}ms` }}
-                      onClick={() => setDropdownOpen(null)}
-                    >
-                      <span className="flex items-center gap-2">
-                        <span className="w-1.5 h-1.5 rounded-full bg-blue-600 group-hover:scale-150 transition-transform duration-200"></span>
-                        {project}
-                      </span>
-                    </a>
-                  ))}
-                </div>
-              )}
-            </div>
+            <button 
+              onClick={(e) => handleSectionClick(e, 'projects')}
+              className="px-5 py-3 text-base font-medium text-white/90 hover:text-white hover:bg-white/5 rounded-lg transition-all duration-200"
+            >
+              Projects
+            </button>
 
-            <a href="#sponsors" className="px-5 py-3 text-base font-medium text-white/90 hover:text-white hover:bg-white/5 rounded-lg transition-all duration-200">
+            <button 
+              onClick={(e) => handleSectionClick(e, 'sponsors')}
+              className="px-5 py-3 text-base font-medium text-white/90 hover:text-white hover:bg-white/5 rounded-lg transition-all duration-200"
+            >
               Sponsors
-            </a>
-            <a href="#team" className="px-5 py-3 text-base font-medium text-white/90 hover:text-white hover:bg-white/5 rounded-lg transition-all duration-200">
+            </button>
+            <button 
+              onClick={handleTeamClick}
+              className="px-5 py-3 text-base font-medium text-white/90 hover:text-white hover:bg-white/5 rounded-lg transition-all duration-200"
+            >
               Team
-            </a>
+            </button>
 
-            {/* Alumni Dropdown */}
-            <div className="relative dropdown">
-              <button
-                onClick={() => toggleDropdown('alumni')}
-                className="flex items-center gap-1.5 px-5 py-3 text-base font-medium text-white/90 hover:text-white hover:bg-white/5 rounded-lg transition-all duration-200 focus:outline-none"
-              >
-                Alumni 
-                <ChevronDown size={18} className={`transition-transform duration-300 ${dropdownOpen === 'alumni' ? 'rotate-180' : ''}`} />
-              </button>
-              {dropdownOpen === 'alumni' && (
-                <div className="absolute left-0 mt-2 w-64 backdrop-blur-xl bg-black/30 border border-blue-600/20 shadow-2xl shadow-blue-600/10 rounded-2xl py-2 z-10 animate-in fade-in slide-in-from-top-2 duration-200">
-                  {alumniYears.map((year, index) => (
-                    <a 
-                      key={year} 
-                      href={`#alumni-${year}`}
-                      className="block px-4 py-2.5 mx-2 my-1 text-sm font-medium text-white/80 hover:text-white hover:bg-gradient-to-r hover:from-blue-600/20 hover:to-blue-700/20 rounded-xl transition-all duration-200 group"
-                      style={{ animationDelay: `${index * 30}ms` }}
-                      onClick={() => setDropdownOpen(null)}
-                    >
-                      <span className="flex items-center gap-2">
-                        <span className="w-1.5 h-1.5 rounded-full bg-blue-600 group-hover:scale-150 transition-transform duration-200"></span>
-                        Class of {year}
-                      </span>
-                    </a>
-                  ))}
-                </div>
-              )}
-            </div>
+            <button 
+              onClick={handleAlumniClick}
+              className="px-5 py-3 text-base font-medium text-white/90 hover:text-white hover:bg-white/5 rounded-lg transition-all duration-200"
+            >
+              Alumni
+            </button>
 
-            {/* Media Dropdown */}
-            <div className="relative dropdown">
-              <button
-                onClick={() => toggleDropdown('media')}
-                className="flex items-center gap-1.5 px-5 py-3 text-base font-medium text-white/90 hover:text-white hover:bg-white/5 rounded-lg transition-all duration-200 focus:outline-none"
-              >
-                Media 
-                <ChevronDown size={18} className={`transition-transform duration-300 ${dropdownOpen === 'media' ? 'rotate-180' : ''}`} />
-              </button>
-              {dropdownOpen === 'media' && (
-                <div className="absolute left-0 mt-2 w-64 backdrop-blur-xl bg-black/30 border border-blue-600/20 shadow-2xl shadow-blue-600/10 rounded-2xl py-2 z-10 animate-in fade-in slide-in-from-top-2 duration-200">
-                  <a href="#images" className="block px-4 py-2.5 mx-2 my-1 text-sm font-medium text-white/80 hover:text-white hover:bg-gradient-to-r hover:from-blue-600/20 hover:to-blue-700/20 rounded-xl transition-all duration-200 group" onClick={() => setDropdownOpen(null)}>
-                    <span className="flex items-center gap-2">
-                      <span className="w-1.5 h-1.5 rounded-full bg-blue-600 group-hover:scale-150 transition-transform duration-200"></span>
-                      Images
-                    </span>
-                  </a>
-                  <a href="#blogs" className="block px-4 py-2.5 mx-2 my-1 text-sm font-medium text-white/80 hover:text-white hover:bg-gradient-to-r hover:from-blue-600/20 hover:to-blue-700/20 rounded-xl transition-all duration-200 group" style={{ animationDelay: '30ms' }} onClick={() => setDropdownOpen(null)}>
-                    <span className="flex items-center gap-2">
-                      <span className="w-1.5 h-1.5 rounded-full bg-blue-600 group-hover:scale-150 transition-transform duration-200"></span>
-                      Blogs
-                    </span>
-                  </a>
-                </div>
-              )}
-            </div>
+            <button 
+              onClick={(e) => handleSectionClick(e, 'gallery')}
+              className="px-5 py-3 text-base font-medium text-white/90 hover:text-white hover:bg-white/5 rounded-lg transition-all duration-200"
+            >
+              Gallery
+            </button>
 
-            <a href="#contacts" className="px-5 py-3 text-base font-medium text-white/90 hover:text-white hover:bg-white/5 rounded-lg transition-all duration-200">
+            <button 
+              onClick={(e) => handleSectionClick(e, 'contact')}
+              className="px-5 py-3 text-base font-medium text-white/90 hover:text-white hover:bg-white/5 rounded-lg transition-all duration-200"
+            >
               Contacts
-            </a>
+            </button>
           </nav>
 
           {/* Mobile Menu Button */}
@@ -186,33 +201,63 @@ const Header = () => {
       {isMenuOpen && (
         <div className="lg:hidden border-t border-white/5 backdrop-blur-xl bg-black/98">
           <nav className="container mx-auto px-8 py-6 flex flex-col gap-2" style={{ fontFamily: 'Rajdhani, sans-serif' }}>
-            <a href="#home" className="px-5 py-4 text-base font-medium text-white/90 hover:text-white hover:bg-white/5 rounded-lg transition-all duration-200" onClick={() => setIsMenuOpen(false)}>
+            <button 
+              onClick={(e) => handleSectionClick(e, 'home')}
+              className="text-left px-5 py-4 text-base font-medium text-white/90 hover:text-white hover:bg-white/5 rounded-lg transition-all duration-200"
+            >
               Home
-            </a>
-            <a href="#about" className="px-5 py-4 text-base font-medium text-white/90 hover:text-white hover:bg-white/5 rounded-lg transition-all duration-200" onClick={() => setIsMenuOpen(false)}>
+            </button>
+            <button 
+              onClick={(e) => handleSectionClick(e, 'about')}
+              className="text-left px-5 py-4 text-base font-medium text-white/90 hover:text-white hover:bg-white/5 rounded-lg transition-all duration-200"
+            >
               About
-            </a>
-            <a href="#subsystems" className="px-5 py-4 text-base font-medium text-white/90 hover:text-white hover:bg-white/5 rounded-lg transition-all duration-200" onClick={() => setIsMenuOpen(false)}>
+            </button>
+            <button 
+              onClick={(e) => handleSectionClick(e, 'subsystems')}
+              className="text-left px-5 py-4 text-base font-medium text-white/90 hover:text-white hover:bg-white/5 rounded-lg transition-all duration-200"
+            >
               Subsystems
-            </a>
-            <a href="#projects" className="px-5 py-4 text-base font-medium text-white/90 hover:text-white hover:bg-white/5 rounded-lg transition-all duration-200" onClick={() => setIsMenuOpen(false)}>
+            </button>
+            <button 
+              onClick={(e) => handleSectionClick(e, 'projects')}
+              className="text-left px-5 py-4 text-base font-medium text-white/90 hover:text-white hover:bg-white/5 rounded-lg transition-all duration-200"
+            >
               Projects
-            </a>
-            <a href="#sponsors" className="px-5 py-4 text-base font-medium text-white/90 hover:text-white hover:bg-white/5 rounded-lg transition-all duration-200" onClick={() => setIsMenuOpen(false)}>
+            </button>
+            <button 
+              onClick={(e) => handleSectionClick(e, 'sponsors')}
+              className="text-left px-5 py-4 text-base font-medium text-white/90 hover:text-white hover:bg-white/5 rounded-lg transition-all duration-200"
+            >
               Sponsors
-            </a>
-            <a href="#team" className="px-5 py-4 text-base font-medium text-white/90 hover:text-white hover:bg-white/5 rounded-lg transition-all duration-200" onClick={() => setIsMenuOpen(false)}>
+            </button>
+            <button 
+              onClick={handleTeamClick}
+              className="text-left px-5 py-4 text-base font-medium text-white/90 hover:text-white hover:bg-white/5 rounded-lg transition-all duration-200"
+            >
               Team
-            </a>
-            <a href="#alumni" className="px-5 py-4 text-base font-medium text-white/90 hover:text-white hover:bg-white/5 rounded-lg transition-all duration-200" onClick={() => setIsMenuOpen(false)}>
+            </button>
+
+            <button 
+              onClick={handleAlumniClick}
+              className="text-left px-5 py-4 text-base font-medium text-white/90 hover:text-white hover:bg-white/5 rounded-lg transition-all duration-200"
+            >
               Alumni
-            </a>
-            <a href="#media" className="px-5 py-4 text-base font-medium text-white/90 hover:text-white hover:bg-white/5 rounded-lg transition-all duration-200" onClick={() => setIsMenuOpen(false)}>
-              Media
-            </a>
-            <a href="#contacts" className="px-5 py-4 text-base font-medium text-white/90 hover:text-white hover:bg-white/5 rounded-lg transition-all duration-200" onClick={() => setIsMenuOpen(false)}>
+            </button>
+            
+            <button 
+              onClick={(e) => handleSectionClick(e, 'gallery')}
+              className="text-left px-5 py-4 text-base font-medium text-white/90 hover:text-white hover:bg-white/5 rounded-lg transition-all duration-200"
+            >
+              Gallery
+            </button>
+
+            <button 
+              onClick={(e) => handleSectionClick(e, 'contact')}
+              className="text-left px-5 py-4 text-base font-medium text-white/90 hover:text-white hover:bg-white/5 rounded-lg transition-all duration-200"
+            >
               Contacts
-            </a>
+            </button>
           </nav>
         </div>
       )}

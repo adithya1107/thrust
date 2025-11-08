@@ -96,7 +96,7 @@ const Contact = () => {
                 <Mail className="w-6 h-6 text-blue-600 flex-shrink-0 mt-1" />
                 <div>
                   <p className="font-semibold mb-1" style={{ fontFamily: 'Rajdhani, sans-serif' }}>Email</p>
-                  <p className="text-gray-400" style={{ fontFamily: 'Rajdhani, sans-serif' }}>team@thrustmit.in</p>
+                  <p className="text-gray-400" style={{ fontFamily: 'Rajdhani, sans-serif' }}>info@thrustmit.in</p>
                 </div>
               </div>
               <div className="flex items-start gap-4">
@@ -110,7 +110,7 @@ const Contact = () => {
                 <Phone className="w-6 h-6 text-blue-600 flex-shrink-0 mt-1" />
                 <div>
                   <p className="font-semibold mb-1" style={{ fontFamily: 'Rajdhani, sans-serif' }}>Phone</p>
-                  <p className="text-gray-400" style={{ fontFamily: 'Rajdhani, sans-serif' }}>+91 8296330426</p>
+                  <p className="text-gray-400" style={{ fontFamily: 'Rajdhani, sans-serif' }}>Team Leader: +91 9881032081<br/>Team Manager: +91 9920511275</p>
                 </div>
               </div>
             </div>

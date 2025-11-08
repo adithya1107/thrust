@@ -87,7 +87,7 @@ const SponsorshipTiers = () => {
         <div className="text-center mb-20">
           <div className="inline-block mb-6">
             <span className="px-6 py-3 rounded-full bg-gradient-to-r from-blue-600/20 to-blue-600/20 text-blue-400 text-sm font-medium border border-blue-600/30 backdrop-blur-sm" style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 500, letterSpacing: '0.05em' }}>
-              SPONSORSHIP PACKAGES
+              Sponsorphip Packages
             </span>
           </div>
           <h1 className="text-5xl md:text-7xl font-bold mb-6" style={{ fontFamily: 'Orbitron, sans-serif' }}>
