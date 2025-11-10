@@ -1,46 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Rocket, Zap, Gauge, Layers, Info, ChevronRight, Search, Book, Star, TrendingUp, Plus, X, Upload, Lock, Eye, Calendar, User } from 'lucide-react';
-import { createClient } from '@supabase/supabase-js';
-import Header from './Header';
+import { Book, ChevronRight, Home, Search, Rocket, Flame, Wind, Zap, Target, Settings } from 'lucide-react';
 import Footer from './Footer';
+import Header from './Header';
 
-// Initialize Supabase client
-const supabaseUrl = 'https://lpmztexkqymllhssfwgz.supabase.co';
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxwbXp0ZXhrcXltbGxoc3Nmd2d6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI1OTgwNDQsImV4cCI6MjA3ODE3NDA0NH0.fgcj6ftOrbXkSGdaOrJjHbZacK2txMNajDSrapfNTrw';
-
-const supabase = createClient(supabaseUrl, supabaseKey);
-
-const ADMIN_PASSWORD = '123'; // Change this to your secure password
-
-const RocketWiki = () => {
-  const [rockets, setRockets] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [selectedRocket, setSelectedRocket] = useState(null);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [activeCategory, setActiveCategory] = useState('all');
-  const [showAddModal, setShowAddModal] = useState(false);
-  const [showPasswordPrompt, setShowPasswordPrompt] = useState(false);
-  const [password, setPassword] = useState('');
-  const [authenticated, setAuthenticated] = useState(false);
-  const [uploadingImage, setUploadingImage] = useState(false);
-
-  // Form state
-  const [formData, setFormData] = useState({
-    name: '',
-    category: 'competition',
-    tagline: '',
-    description: '',
-    height: '',
-    diameter: '',
-    weight: '',
-    apogee: '',
-    motor: '',
-    features: ['', '', '', '', ''],
-    status: 'Development',
-    launch_date: '',
-    author_name: '',
-    image_url: ''
-  });
+const RocketryWiki = () => {
+  const [selectedTopic, setSelectedTopic] = useState(null);
+  const [selectedChapter, setSelectedChapter] = useState(null);
+  const [searchQuery, setSearchQuery] = useState('');
 
   // Font loading
   useEffect(() => {
@@ -50,661 +16,661 @@ const RocketWiki = () => {
     document.head.appendChild(link);
   }, []);
 
-  // Fetch rockets from Supabase
-  useEffect(() => {
-    fetchRockets();
-  }, []);
+  const wikiData = [
+    {
+      id: 'rocket-basics',
+      title: 'Rocket Basics',
+      icon: Rocket,
+      description: 'Fundamental principles of rocketry',
+      chapters: [
+        {
+          id: 'intro',
+          title: 'Introduction to Rocketry',
+          content: `Rocketry is the science and technology of rocket design, construction, and flight. A rocket is a vehicle that obtains thrust from a rocket engine through the expulsion of reaction mass at high speed.
 
-  const fetchRockets = async () => {
-    try {
-      setLoading(true);
-      const { data, error } = await supabase
-        .from('rockets')
-        .select('*')
-        .order('created_at', { ascending: false });
+The fundamental principle behind rocket propulsion is Newton's Third Law of Motion: for every action, there is an equal and opposite reaction. When a rocket expels mass out of its nozzle at high velocity, it experiences an equal and opposite force that propels it forward.
 
-      if (error) throw error;
-      setRockets(data || []);
-    } catch (error) {
-      console.error('Error fetching rockets:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handlePasswordSubmit = () => {
-    if (password === ADMIN_PASSWORD) {
-      setAuthenticated(true);
-      setShowPasswordPrompt(false);
-      setShowAddModal(true);
-      setPassword('');
-    } else {
-      alert('Incorrect password!');
-      setPassword('');
-    }
-  };
-
-  const handleImageUpload = async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-
-    try {
-      setUploadingImage(true);
-      const fileExt = file.name.split('.').pop();
-      const fileName = `${Math.random()}.${fileExt}`;
-      const filePath = `${fileName}`;
-
-      const { error: uploadError } = await supabase.storage
-        .from('rocket-images')
-        .upload(filePath, file);
-
-      if (uploadError) throw uploadError;
-
-      const { data: { publicUrl } } = supabase.storage
-        .from('rocket-images')
-        .getPublicUrl(filePath);
-
-      setFormData({ ...formData, image_url: publicUrl });
-    } catch (error) {
-      console.error('Error uploading image:', error);
-      alert('Failed to upload image');
-    } finally {
-      setUploadingImage(false);
-    }
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    try {
-      const rocketData = {
-        name: formData.name,
-        category: formData.category,
-        tagline: formData.tagline,
-        description: formData.description,
-        specs: {
-          height: formData.height,
-          diameter: formData.diameter,
-          weight: formData.weight,
-          apogee: formData.apogee,
-          motor: formData.motor
+Rockets are unique among propulsion systems because they carry both fuel and oxidizer, allowing them to operate in the vacuum of space where no atmospheric oxygen is available.`
         },
-        features: formData.features.filter(f => f.trim() !== ''),
-        status: formData.status,
-        launch_date: formData.launch_date,
-        author_name: formData.author_name,
-        image_url: formData.image_url || 'black_logo.svg'
-      };
+        {
+          id: 'history',
+          title: 'History of Rocketry',
+          content: `The history of rocketry dates back to ancient China, where gunpowder-filled tubes were used as weapons and fireworks around the 13th century. However, modern rocketry began in the early 20th century with pioneers like Konstantin Tsiolkovsky, Robert Goddard, and Hermann Oberth.
 
-      const { error } = await supabase
-        .from('rockets')
-        .insert([rocketData]);
+Robert Goddard launched the first liquid-fueled rocket in 1926, marking a major milestone. The V-2 rocket developed during World War II became the first artificial object to reach space in 1944.
 
-      if (error) throw error;
+The Space Age began with the launch of Sputnik 1 in 1957, followed by Yuri Gagarin's historic spaceflight in 1961 and the Apollo moon landings from 1969-1972. Today, rocketry continues to advance with reusable rockets and ambitious missions to Mars and beyond.`
+        },
+        {
+          id: 'types',
+          title: 'Types of Rockets',
+          content: `Rockets can be classified based on their propulsion systems:
 
-      alert('Rocket added successfully!');
-      setShowAddModal(false);
-      setAuthenticated(false);
-      setFormData({
-        name: '',
-        category: 'competition',
-        tagline: '',
-        description: '',
-        height: '',
-        diameter: '',
-        weight: '',
-        apogee: '',
-        motor: '',
-        features: ['', '', '', '', ''],
-        status: 'Development',
-        launch_date: '',
-        author_name: '',
-        image_url: ''
-      });
-      fetchRockets();
-    } catch (error) {
-      console.error('Error adding rocket:', error);
-      alert('Failed to add rocket');
+**Solid Rockets**: Use a solid propellant mixture that burns continuously once ignited. Simple and reliable, but cannot be throttled or shut down once started. Commonly used in boosters and military applications.
+
+**Liquid Rockets**: Use separate liquid fuel and oxidizer that are mixed in the combustion chamber. Offer precise throttle control and can be shut down and restarted. More complex but provide better performance.
+
+**Hybrid Rockets**: Combine solid fuel with liquid or gaseous oxidizer. Offer benefits of both systems with improved safety and throttle capability.
+
+**Electric Propulsion**: Use electrical energy to accelerate propellant to high speeds. Very efficient but provide low thrust. Used for spacecraft maneuvering and deep space missions.`
+        }
+      ]
+    },
+    {
+      id: 'propulsion',
+      title: 'Rocket Propulsion',
+      icon: Flame,
+      description: 'Engines, motors, and thrust generation',
+      chapters: [
+        {
+          id: 'fundamentals',
+          title: 'Propulsion Fundamentals',
+          content: `Rocket propulsion is governed by the principle of momentum conservation. The thrust equation describes the force generated:
+
+F = ṁ * Ve + (Pe - Pa) * Ae
+
+Where:
+- F is thrust
+- ṁ is mass flow rate
+- Ve is exhaust velocity
+- Pe is exit pressure
+- Pa is ambient pressure
+- Ae is nozzle exit area
+
+The specific impulse (Isp) is a key performance metric measuring the efficiency of a rocket engine. It represents the thrust produced per unit weight of propellant consumed per second.`
+        },
+        {
+          id: 'combustion',
+          title: 'Combustion Process',
+          content: `The combustion process in rocket engines involves the rapid chemical reaction between fuel and oxidizer in the combustion chamber. This reaction releases tremendous amounts of energy in the form of heat, creating high-temperature, high-pressure gases.
+
+Key factors affecting combustion:
+- **Mixture Ratio**: The proportion of oxidizer to fuel
+- **Chamber Pressure**: Higher pressures improve performance
+- **Temperature**: Combustion temperatures can exceed 3000°C
+- **Residence Time**: Duration reactants spend in chamber
+
+The combustion products are then accelerated through a converging-diverging nozzle, converting thermal energy into kinetic energy and producing thrust.`
+        },
+        {
+          id: 'nozzles',
+          title: 'Rocket Nozzles',
+          content: `The rocket nozzle is a critical component that converts high-pressure, high-temperature gases into high-velocity exhaust. Most rocket nozzles use a converging-diverging design (de Laval nozzle).
+
+**Nozzle Sections**:
+- **Convergent Section**: Accelerates flow to sonic velocity at the throat
+- **Throat**: Minimum area where flow reaches Mach 1
+- **Divergent Section**: Further accelerates flow to supersonic speeds
+
+The nozzle expansion ratio (exit area to throat area) is optimized for the operating altitude. Overexpanded or underexpanded nozzles lose efficiency. Advanced designs include:
+- Bell nozzles (most common)
+- Aerospike nozzles (altitude-compensating)
+- Plug nozzles (compact design)`
+        }
+      ]
+    },
+    {
+      id: 'aerodynamics',
+      title: 'Aerodynamics',
+      icon: Wind,
+      description: 'Stability, drag, and flight dynamics',
+      chapters: [
+        {
+          id: 'stability',
+          title: 'Rocket Stability',
+          content: `Rocket stability is crucial for successful flight. A stable rocket naturally corrects itself when disturbed, while an unstable rocket will tumble out of control.
+
+**Center of Gravity (CG)**: The point where the rocket's weight is balanced. It moves aft as propellant is consumed.
+
+**Center of Pressure (CP)**: The point where aerodynamic forces act. It's determined by the rocket's external shape.
+
+**Stability Margin**: For passive stability, the CP must be behind the CG by at least one rocket diameter (caliber). This ensures corrective moments when the rocket tilts.
+
+Factors affecting stability:
+- Fin size and placement
+- Nose cone shape
+- Body tube length
+- Mass distribution`
+        },
+        {
+          id: 'drag',
+          title: 'Drag Forces',
+          content: `Drag is the aerodynamic force opposing a rocket's motion through the atmosphere. It depends on velocity, air density, and the rocket's shape.
+
+**Types of Drag**:
+
+**Skin Friction Drag**: Caused by air viscosity along the rocket's surface. Reduced with smooth finishes.
+
+**Pressure Drag (Form Drag)**: Results from pressure differences around the rocket body. Minimized with streamlined shapes.
+
+**Base Drag**: Caused by low pressure at the rocket's base. Can be significant at transonic speeds.
+
+**Wave Drag**: Occurs at supersonic speeds due to shock waves. Managed through proper nose cone design.
+
+The drag coefficient (Cd) quantifies drag efficiency. Lower Cd values indicate better aerodynamic performance. Typical model rockets have Cd values between 0.4-0.8.`
+        },
+        {
+          id: 'flight-phases',
+          title: 'Flight Phases',
+          content: `A typical rocket flight consists of several distinct phases:
+
+**1. Launch Phase**: Maximum acceleration as the rocket lifts off. Structural loads are highest during this phase.
+
+**2. Powered Flight**: The rocket accelerates while the motor burns. Experiences maximum dynamic pressure (Max-Q) partway through this phase.
+
+**3. Coast Phase**: After burnout, the rocket coasts upward on momentum alone. Continues to decelerate due to gravity and drag.
+
+**4. Apogee**: The highest point of flight where vertical velocity becomes zero. Ideal moment for recovery deployment.
+
+**5. Recovery Descent**: Parachute or other recovery system deploys, slowing the rocket's descent to a safe landing speed.
+
+**6. Landing**: Touchdown at terminal velocity under parachute. Proper recovery ensures the rocket can be flown again.`
+        }
+      ]
+    },
+    {
+      id: 'avionics',
+      title: 'Avionics & Electronics',
+      icon: Zap,
+      description: 'Flight computers, sensors, and telemetry',
+      chapters: [
+        {
+          id: 'flight-computers',
+          title: 'Flight Computers',
+          content: `Flight computers are the brains of modern rockets, managing everything from data logging to active control systems.
+
+**Core Functions**:
+- Real-time sensor data acquisition
+- Flight state estimation
+- Event detection (liftoff, apogee, landing)
+- Recovery system deployment
+- Telemetry transmission
+
+**Key Components**:
+- **Microcontroller/Processor**: Executes flight software
+- **IMU (Inertial Measurement Unit)**: Accelerometers and gyroscopes
+- **Barometer**: Altitude measurement
+- **GPS**: Position and velocity tracking
+- **Flash Memory**: Data storage
+- **Radio**: Telemetry and ground communication
+
+Modern flight computers can log data at rates exceeding 100Hz, providing detailed flight profiles for post-flight analysis.`
+        },
+        {
+          id: 'sensors',
+          title: 'Sensor Systems',
+          content: `Rockets use various sensors to monitor their state during flight:
+
+**Accelerometers**: Measure acceleration along multiple axes. Used for velocity and position estimation through integration.
+
+**Gyroscopes**: Measure angular rates of rotation. Essential for determining rocket orientation.
+
+**Barometers**: Measure atmospheric pressure to calculate altitude. Highly reliable but can be affected by airflow.
+
+**GPS Receivers**: Provide absolute position, velocity, and altitude. Crucial for tracking and recovery.
+
+**Temperature Sensors**: Monitor critical components like motors and avionics bays.
+
+**Magnetometers**: Measure magnetic field orientation for heading determination.
+
+**Voltage/Current Sensors**: Monitor battery health and power consumption.
+
+Sensor fusion algorithms combine data from multiple sensors to produce accurate state estimates even when individual sensors may be noisy or unreliable.`
+        },
+        {
+          id: 'telemetry',
+          title: 'Telemetry Systems',
+          content: `Telemetry systems transmit flight data to ground stations in real-time, enabling monitoring and analysis during flight.
+
+**Telemetry Components**:
+- **Transmitter**: Radio module on the rocket
+- **Antenna**: Optimized for the operating frequency
+- **Receiver**: Ground station equipment
+- **Data Link Protocol**: Defines packet structure and error correction
+
+**Common Frequencies**:
+- 433 MHz: Long range, good penetration
+- 915 MHz: Higher bandwidth
+- 2.4 GHz: High data rates, shorter range
+
+**Data Transmitted**:
+- Altitude and velocity
+- Acceleration and orientation
+- GPS coordinates
+- Battery voltage
+- Event flags
+- Diagnostic information
+
+Robust telemetry is crucial for high-altitude flights where visual tracking becomes impossible. It also provides valuable data if the rocket is not recovered.`
+        }
+      ]
+    },
+    {
+      id: 'structures',
+      title: 'Structures & Materials',
+      icon: Settings,
+      description: 'Airframe design and construction',
+      chapters: [
+        {
+          id: 'materials',
+          title: 'Rocket Materials',
+          content: `Material selection is critical for rocket performance, balancing strength, weight, and manufacturability.
+
+**Common Materials**:
+
+**Cardboard/Paperboard**: Used in model rockets. Lightweight and easy to work with but limited strength.
+
+**Fiberglass**: Excellent strength-to-weight ratio. Common in mid-power and high-power rockets. Available in various weave patterns and weights.
+
+**Carbon Fiber**: Superior strength and stiffness with minimal weight. Expensive but ideal for performance applications.
+
+**Aluminum**: Used for structural components, motor mounts, and centering rings. Easy to machine and weld.
+
+**Plastics (PLA, ABS, Nylon)**: 3D-printable materials for custom components like nose cones and fin cans.
+
+**Plywood**: Birch or aircraft ply for fins and internal structures. Good strength and easy to work with.
+
+Material properties to consider: tensile strength, compressive strength, modulus of elasticity, density, temperature resistance, and machinability.`
+        },
+        {
+          id: 'airframe',
+          title: 'Airframe Design',
+          content: `The airframe is the rocket's main structure, housing all components and withstanding flight loads.
+
+**Design Considerations**:
+
+**Load Cases**: Thrust during motor burn, aerodynamic loads, recovery system deployment shock, landing impact.
+
+**Body Tube**: Usually circular for structural efficiency. Diameter chosen based on motor size and component packaging. Wall thickness determined by stress analysis.
+
+**Bulkheads**: Separate compartments and distribute loads. Must be properly secured to handle parachute deployment forces.
+
+**Couplers**: Join body tube sections. Should provide strong, reliable connections with proper overlap.
+
+**Motor Mount**: Securely holds the motor and transfers thrust to the airframe. Typically uses centering rings and through-the-wall fin attachment for strength.
+
+**Recovery Bay**: Houses parachutes and electronics. Sized for proper packing and must allow clean deployment.`
+        },
+        {
+          id: 'manufacturing',
+          title: 'Manufacturing Techniques',
+          content: `Various manufacturing methods are used in rocket construction:
+
+**Filament Winding**: Automated process wrapping fiber around a mandrel. Produces strong, consistent tubes.
+
+**Hand Layup**: Manual application of fiber and resin. Allows complex geometries but requires skill for consistent results.
+
+**Vacuum Bagging**: Removes air and excess resin, creating lighter, stronger laminates. Used with hand layup.
+
+**3D Printing**: Rapid prototyping of complex parts like nose cones, fin cans, and custom brackets. FDM and SLA technologies commonly used.
+
+**CNC Machining**: Precision manufacturing of aluminum components, centering rings, and bulkheads.
+
+**Tube Rolling**: Creating body tubes from sheet materials (fiberglass, carbon fiber).
+
+**Assembly Techniques**: Epoxy bonding, mechanical fasteners, through-the-wall fin attachment. Proper surface preparation and curing conditions are essential for strong bonds.`
+        }
+      ]
+    },
+    {
+      id: 'recovery',
+      title: 'Recovery Systems',
+      icon: Target,
+      description: 'Parachutes and landing systems',
+      chapters: [
+        {
+          id: 'parachutes',
+          title: 'Parachute Design',
+          content: `Parachutes are the most common recovery method, slowing the rocket to a safe landing speed.
+
+**Parachute Types**:
+
+**Round Parachutes**: Classic dome design. Simple and reliable. Moderate descent rates.
+
+**Cruciform**: Cross-shaped canopy. More stable than round chutes. Good for windy conditions.
+
+**Annular (Ring)**: Donut-shaped with center hole. Very stable, slower oscillation.
+
+**Parasheet**: Flat square or rectangular design. Simple but less stable.
+
+**Sizing Calculation**: Parachute diameter based on desired descent rate, rocket weight, and air density. Typical descent rates: 15-20 fps for model rockets, 10-15 fps for high-power.
+
+**Materials**: Ripstop nylon for strength and tear resistance. Spandex for shock absorption. Kevlar for high-temperature applications near motor ejection.
+
+**Construction**: Properly sewn gores, reinforced apex and attachment points, shroud lines rated for deployment shock loads.`
+        },
+        {
+          id: 'deployment',
+          title: 'Deployment Methods',
+          content: `Several methods exist for deploying recovery systems:
+
+**Motor Ejection**: Black powder charge in motor delays ejects parachute. Simple but timing is fixed and motor-dependent.
+
+**Electronic Deployment**: Flight computer triggers ejection charges based on sensor data (altitude, velocity, acceleration). Allows dual deployment and better timing control.
+
+**Dual Deployment**: Uses two parachutes - small drogue at apogee, main chute at lower altitude (typically 500-1000 ft). Reduces drift while maintaining safe landing speed.
+
+**CO2 Ejection**: Compressed CO2 cartridges triggered electronically. Cleaner than black powder, reusable hardware.
+
+**Spring/Piston Ejection**: Mechanical systems that push nosecone off. Reliable and reusable.
+
+**Deployment Considerations**: Shock loading on airframe, parachute packing techniques, separation mechanisms, shear pin sizing, ejection charge amount, altitude selection for main deployment.`
+        },
+        {
+          id: 'alternative',
+          title: 'Alternative Recovery',
+          content: `Beyond traditional parachutes, several alternative recovery methods exist:
+
+**Helicopter Recovery**: Rotating blades create lift, allowing controlled descent. Popular in model rocketry for minimal drift.
+
+**Streamer Recovery**: Long ribbon creates drag. Compact and lightweight but higher descent rates. Used for small, durable rockets.
+
+**Glider Recovery**: Rocket transforms into a glider after motor burnout. Complex but enables long flight times and precise landing.
+
+**Powered Descent**: Uses motor thrust to slow descent (propulsive landing). Extremely challenging but enables pinpoint landing and reusability like SpaceX Falcon 9.
+
+**Airbag Landing**: Inflatable cushioning system. Used in some space capsules.
+
+**Water Landing**: Splash down in water body. Requires waterproof design and recovery boats.
+
+Each method has trade-offs in complexity, weight, reliability, and landing speed. Choice depends on rocket size, field conditions, and mission requirements.`
+        }
+      ]
     }
-  };
-
-  const categories = [
-    { id: 'all', name: 'All Rockets', icon: Rocket },
-    { id: 'competition', name: 'Competition', icon: Star },
-    { id: 'research', name: 'Research', icon: Book },
-    { id: 'experimental', name: 'Experimental', icon: TrendingUp }
   ];
 
-  const filteredRockets = rockets.filter(rocket => {
-    const matchesSearch = rocket.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         rocket.description.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = activeCategory === 'all' || rocket.category === activeCategory;
-    return matchesSearch && matchesCategory;
-  });
-
-  const getStatusColor = (status) => {
-    switch(status) {
-      case 'Active': return 'text-green-400 bg-green-400/10 border-green-400/30';
-      case 'Development': return 'text-yellow-400 bg-yellow-400/10 border-yellow-400/30';
-      case 'Testing': return 'text-blue-400 bg-blue-400/10 border-blue-400/30';
-      default: return 'text-gray-400 bg-gray-400/10 border-gray-400/30';
-    }
-  };
+  const filteredTopics = wikiData.filter(topic =>
+    topic.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    topic.description.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
     <div className="min-h-screen bg-black text-white">
-      <Header />
-      {/* Hero Section */}
-      <section className="relative py-20 px-4 overflow-hidden">
-        <div className="absolute inset-0">
-          <div className="absolute top-0 left-1/4 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl animate-pulse" />
-          <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
-        </div>
-        <div className="absolute inset-0 bg-[linear-gradient(rgba(59,130,246,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(59,130,246,0.03)_1px,transparent_1px)] bg-[size:50px_50px]" />
+      {/* Header */}
 
-        <div className="relative max-w-7xl mx-auto text-center pt-2">
-          <div className="flex justify-end mb-4">
-            <button
-              onClick={() => setShowPasswordPrompt(true)}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl transition-all duration-300 flex items-center gap-2 shadow-lg shadow-blue-600/30"
-              style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 600 }}
-            >
-              <Plus size={20} />
-              Add New Article
-            </button>
-          </div>
-
-          <h1 className="text-5xl md:text-7xl font-bold mb-6" style={{ fontFamily: 'Orbitron, sans-serif' }}>
-            Rocket <span className="text-blue-600">Encyclopedia</span>
-          </h1>
-          <p className="text-lg md:text-xl text-gray-400 max-w-3xl mx-auto mb-10" style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 400, letterSpacing: '0.05em' }}>
-            Explore our fleet of rockets, from competition champions to experimental platforms pushing the boundaries of student rocketry
-          </p>
-
-          {/* Search Bar */}
-          <div className="max-w-2xl mx-auto mb-8">
-            <div className="relative">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
-              <input
-                type="text"
-                placeholder="Search rockets by name or description..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full bg-white/5 border border-white/10 rounded-xl px-12 py-4 focus:border-blue-600 focus:outline-none transition-colors text-white placeholder-gray-500"
-                style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 400 }}
-              />
+      {/* Breadcrumb */}
+      {(selectedTopic || selectedChapter) && (
+        <div className="bg-gradient-to-r from-blue-600/10 to-transparent border-b border-blue-600/20 py-10">
+          <div className="container mx-auto px-6 py-3">
+            <div className="flex items-center gap-2 text-sm" style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 400 }}>
+              <button
+                onClick={() => {
+                  setSelectedChapter(null);
+                  setSelectedTopic(null);
+                }}
+                className="text-blue-400 hover:text-blue-300 transition-colors"
+              >
+                Home
+              </button>
+              {selectedTopic && (
+                <>
+                  <ChevronRight size={16} className="text-gray-600" />
+                  <button
+                    onClick={() => setSelectedChapter(null)}
+                    className={`transition-colors ${
+                      selectedChapter ? 'text-blue-400 hover:text-blue-300' : 'text-gray-400'
+                    }`}
+                  >
+                    {selectedTopic.title}
+                  </button>
+                </>
+              )}
+              {selectedChapter && (
+                <>
+                  <ChevronRight size={16} className="text-gray-600" />
+                  <span className="text-gray-400">{selectedChapter.title}</span>
+                </>
+              )}
             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Rockets Grid */}
-      <section className="relative py-12 px-4">
-        <div className="max-w-7xl mx-auto">
-          {loading ? (
-            <div className="text-center py-20">
-              <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-600 mx-auto" />
-              <p className="text-gray-400 mt-4" style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 400 }}>
-                Loading rockets...
-              </p>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {filteredRockets.map((rocket) => (
-                <div
-                  key={rocket.id}
-                  className="group relative bg-gradient-to-br from-gray-900/80 to-black/80 backdrop-blur-xl border border-gray-800/50 rounded-3xl overflow-hidden hover:border-blue-600/50 transition-all duration-500 cursor-pointer hover:scale-105 hover:shadow-2xl hover:shadow-blue-600/20"
-                  onClick={() => setSelectedRocket(rocket)}
-                >
-                  {/* Image */}
-                  <div className="relative h-48 bg-gradient-to-br from-blue-600/20 to-blue-800/20 flex items-center justify-center border-b border-gray-800/50 overflow-hidden">
-                    <img 
-                      src={rocket.image_url || 'black_logo.svg'} 
-                      alt={rocket.name} 
-                      className="w-full h-full object-cover opacity-90"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
-                  </div>
-
-                  {/* Content */}
-                  <div className="p-6">
-                    <div className="flex items-start justify-between mb-2">
-                      <h3 className="text-2xl font-bold" style={{ fontFamily: 'Orbitron, sans-serif' }}>
-                        {rocket.name}
-                      </h3>
-                      <span className={`px-3 py-1 rounded-full text-xs border ${getStatusColor(rocket.status)}`} style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 500 }}>
-                        {rocket.status}
-                      </span>
-                    </div>
-                    <p className="text-blue-400 text-sm mb-3" style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 500 }}>
-                      {rocket.tagline}
-                    </p>
-                    <p className="text-gray-400 text-sm mb-4 line-clamp-3" style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 400 }}>
-                      {rocket.description}
-                    </p>
-
-                    {/* Quick Stats */}
-                    <div className="grid grid-cols-2 gap-3 mb-4">
-                      <div className="bg-white/5 rounded-lg p-3 border border-white/10">
-                        <p className="text-xs text-gray-500 mb-1" style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 400 }}>Height</p>
-                        <p className="text-white font-bold" style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 600 }}>{rocket.specs.height}</p>
-                      </div>
-                      <div className="bg-white/5 rounded-lg p-3 border border-white/10">
-                        <p className="text-xs text-gray-500 mb-1" style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 400 }}>Apogee</p>
-                        <p className="text-white font-bold" style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 600 }}>{rocket.specs.apogee}</p>
-                      </div>
-                    </div>
-
-                    {/* Author & Date */}
-                    <div className="flex items-center gap-4 text-xs text-gray-500 mb-4" style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 400 }}>
-                      <div className="flex items-center gap-1">
-                        <User size={14} />
-                        {rocket.author_name}
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <Calendar size={14} />
-                        {rocket.launch_date}
-                      </div>
-                    </div>
-
-                    {/* View Details Button */}
-                    <button className="w-full bg-blue-600/20 hover:bg-blue-600 text-blue-400 hover:text-white py-3 rounded-xl transition-all duration-300 flex items-center justify-center gap-2 border border-blue-600/30" style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 600 }}>
-                      View Details
-                      <ChevronRight size={18} />
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-
-          {filteredRockets.length === 0 && !loading && (
-            <div className="text-center py-20">
-              <p className="text-gray-400 text-lg" style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 400 }}>
-                No rockets found matching your search
-              </p>
-            </div>
-          )}
-        </div>
-      </section>
-
-      {/* Password Prompt Modal */}
-      {showPasswordPrompt && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-sm" onClick={() => setShowPasswordPrompt(false)}>
-          <div className="relative max-w-md w-full bg-gradient-to-br from-gray-900 to-black border border-blue-600/30 rounded-3xl p-8" onClick={(e) => e.stopPropagation()}>
-            <button
-              onClick={() => setShowPasswordPrompt(false)}
-              className="absolute top-4 right-4 w-8 h-8 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center transition-colors"
-            >
-              <X size={20} />
-            </button>
-
-            <div className="text-center mb-6">
-              <div className="w-16 h-16 bg-blue-600/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Lock size={32} className="text-blue-600" />
-              </div>
-              <h2 className="text-2xl font-bold mb-2" style={{ fontFamily: 'Orbitron, sans-serif' }}>
-                Authentication Required
-              </h2>
-              <p className="text-gray-400" style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 400 }}>
-                Enter the admin password to add a new rocket
-              </p>
-            </div>
-
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              onKeyPress={(e) => e.key === 'Enter' && handlePasswordSubmit()}
-              placeholder="Enter password"
-              className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 mb-4 focus:border-blue-600 focus:outline-none transition-colors text-white placeholder-gray-500"
-              style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 400 }}
-            />
-
-            <button
-              onClick={handlePasswordSubmit}
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl transition-all duration-300"
-              style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 600 }}
-            >
-              Submit
-            </button>
           </div>
         </div>
       )}
 
-      {/* Add Rocket Modal */}
-      {showAddModal && authenticated && (
-        <div className="fixed inset-0 z-50 flex items-start justify-center p-4 bg-black/90 backdrop-blur-sm overflow-y-auto">
-          <div className="relative max-w-4xl w-full my-8 bg-gradient-to-br from-gray-900 to-black border border-blue-600/30 rounded-3xl p-8 max-h-[calc(100vh-4rem)] overflow-y-auto">
-            <button
-              onClick={() => {
-                setShowAddModal(false);
-                setAuthenticated(false);
-              }}
-              className="absolute top-6 right-6 w-10 h-10 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center transition-colors"
-            >
-              <X size={20} />
-            </button>
+      {/* Main Content */}
+      <main className="container mx-auto px-6 py-12 flex gap-8">
+        {/* Sidebar Navigation */}
+        {(selectedTopic || selectedChapter) && (
+          <aside className="hidden lg:block w-64 flex-shrink-0">
+            <div className="sticky top-24 bg-gradient-to-br from-gray-900/80 to-black/80 border border-gray-800/50 rounded-2xl p-6">
+              <h3 className="text-sm font-semibold text-gray-400 mb-4 uppercase tracking-wider" style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 600 }}>
+                Child Pages
+              </h3>
+              
+              <nav className="space-y-1">
+                <button
+                  onClick={() => {
+                    setSelectedChapter(null);
+                    setSelectedTopic(null);
+                  }}
+                  className="w-full text-left px-3 py-2 rounded-lg text-sm hover:bg-blue-600/20 transition-colors text-gray-400 hover:text-blue-400"
+                  style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 500 }}
+                >
+                  Pages
+                </button>
+                
+                {selectedTopic && (
+                  <div className="ml-2 border-l-2 border-gray-700 pl-2">
+                    <button
+                      onClick={() => setSelectedChapter(null)}
+                      className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${
+                        !selectedChapter 
+                          ? 'bg-blue-600/20 text-blue-400' 
+                          : 'text-gray-400 hover:bg-blue-600/10 hover:text-blue-400'
+                      }`}
+                      style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 500 }}
+                    >
+                      {selectedTopic.title}
+                    </button>
+                    
+                    <div className="ml-2 border-l-2 border-gray-700 pl-2 mt-1 space-y-1">
+                      {selectedTopic.chapters.map((chapter) => (
+                        <button
+                          key={chapter.id}
+                          onClick={() => setSelectedChapter(chapter)}
+                          className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${
+                            selectedChapter?.id === chapter.id
+                              ? 'bg-blue-600/20 text-blue-400 font-semibold'
+                              : 'text-gray-400 hover:bg-blue-600/10 hover:text-blue-400'
+                          }`}
+                          style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: selectedChapter?.id === chapter.id ? 600 : 400 }}
+                        >
+                          {chapter.title}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </nav>
+            </div>
+          </aside>
+        )}
+        
+        <div className="flex-1">
+        {!selectedTopic && !selectedChapter && (
+          <div>
+            {/* Welcome Section */}
+            <div className="mb-12 text-center max-w-4xl mx-auto">
+              <h2 className="text-4xl md:text-5xl font-bold mb-4" style={{ fontFamily: 'Orbitron, sans-serif' }}>
+                Welcome to the <span className="text-blue-600">Rocketry Knowledge Base</span>
+              </h2>
+              <p className="text-gray-400 text-lg" style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 400, letterSpacing: '0.05em' }}>
+                Explore comprehensive guides on rocket design, propulsion, aerodynamics, and more
+              </p>
+            </div>
 
-            <h2 className="text-3xl font-bold mb-6" style={{ fontFamily: 'Orbitron, sans-serif' }}>
-              Add an Article
-            </h2>
-
-            <form onSubmit={handleSubmit} className="space-y-6">
-              {/* Basic Info */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm text-gray-400 mb-2" style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 400 }}>Rocket Name *</label>
-                  <input
-                    type="text"
-                    required
-                    value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:border-blue-600 focus:outline-none transition-colors text-white"
-                    style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 400 }}
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm text-gray-400 mb-2" style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 400 }}>Category *</label>
-                  <select
-                    value={formData.category}
-                    onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:border-blue-600 focus:outline-none transition-colors text-white"
-                    style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 400 }}
-                  >
-                    <option value="competition">Competition</option>
-                    <option value="research">Research</option>
-                    <option value="experimental">Experimental</option>
-                  </select>
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm text-gray-400 mb-2" style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 400 }}>Tagline *</label>
+            {/* Search Bar */}
+            <div className="mb-12 max-w-2xl mx-auto">
+              <div className="relative">
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 w-5 h-5" />
                 <input
                   type="text"
-                  required
-                  value={formData.tagline}
-                  onChange={(e) => setFormData({ ...formData, tagline: e.target.value })}
-                  className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:border-blue-600 focus:outline-none transition-colors text-white"
+                  placeholder="Search wiki topics..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full pl-12 pr-4 py-4 bg-gray-900/50 border border-blue-600/20 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-blue-600/50 transition-colors"
                   style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 400 }}
                 />
               </div>
+            </div>
 
-              <div>
-                <label className="block text-sm text-gray-400 mb-2" style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 400 }}>Description *</label>
-                <textarea
-                  required
-                  rows={4}
-                  value={formData.description}
-                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:border-blue-600 focus:outline-none transition-colors text-white resize-none"
-                  style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 400 }}
-                />
-              </div>
-
-              {/* Specifications */}
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                <div>
-                  <label className="block text-sm text-gray-400 mb-2" style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 400 }}>Height *</label>
-                  <input
-                    type="text"
-                    required
-                    placeholder="e.g., 3.2m"
-                    value={formData.height}
-                    onChange={(e) => setFormData({ ...formData, height: e.target.value })}
-                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:border-blue-600 focus:outline-none transition-colors text-white"
-                    style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 400 }}
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm text-gray-400 mb-2" style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 400 }}>Diameter *</label>
-                  <input
-                    type="text"
-                    required
-                    placeholder="e.g., 15cm"
-                    value={formData.diameter}
-                    onChange={(e) => setFormData({ ...formData, diameter: e.target.value })}
-                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:border-blue-600 focus:outline-none transition-colors text-white"
-                    style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 400 }}
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm text-gray-400 mb-2" style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 400 }}>Weight *</label>
-                  <input
-                    type="text"
-                    required
-                    placeholder="e.g., 25kg"
-                    value={formData.weight}
-                    onChange={(e) => setFormData({ ...formData, weight: e.target.value })}
-                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:border-blue-600 focus:outline-none transition-colors text-white"
-                    style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 400 }}
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm text-gray-400 mb-2" style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 400 }}>Apogee *</label>
-                  <input
-                    type="text"
-                    required
-                    placeholder="e.g., 10,000ft"
-                    value={formData.apogee}
-                    onChange={(e) => setFormData({ ...formData, apogee: e.target.value })}
-                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:border-blue-600 focus:outline-none transition-colors text-white"
-                    style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 400 }}
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm text-gray-400 mb-2" style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 400 }}>Motor *</label>
-                  <input
-                    type="text"
-                    required
-                    placeholder="e.g., L-Class Solid"
-                    value={formData.motor}
-                    onChange={(e) => setFormData({ ...formData, motor: e.target.value })}
-                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:border-blue-600 focus:outline-none transition-colors text-white"
-                    style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 400 }}
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm text-gray-400 mb-2" style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 400 }}>Status *</label>
-                  <select
-                    value={formData.status}
-                    onChange={(e) => setFormData({ ...formData, status: e.target.value })}
-                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:border-blue-600 focus:outline-none transition-colors text-white"
-                    style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 400 }}
+            {/* Topics Grid */}
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {filteredTopics.map((topic) => {
+                const Icon = topic.icon;
+                return (
+                  <button
+                    key={topic.id}
+                    onClick={() => setSelectedTopic(topic)}
+                    className="group relative bg-gradient-to-br from-gray-900/80 to-black/80 border border-gray-800/50 hover:border-blue-600/50 rounded-2xl p-6 text-left transition-all hover:scale-105 hover:shadow-2xl hover:shadow-blue-600/20"
                   >
-                    <option value="Active">Active</option>
-                    <option value="Development">Development</option>
-                    <option value="Testing">Testing</option>
-                  </select>
-                </div>
-              </div>
-
-              {/* Features */}
-              <div>
-                <label className="block text-sm text-gray-400 mb-2" style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 400 }}>Key Features (5 features)</label>
-                {formData.features.map((feature, index) => (
-                  <input
-                    key={index}
-                    type="text"
-                    value={feature}
-                    onChange={(e) => {
-                      const newFeatures = [...formData.features];
-                      newFeatures[index] = e.target.value;
-                      setFormData({ ...formData, features: newFeatures });
-                    }}
-                    placeholder={`Feature ${index + 1}`}
-                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:border-blue-600 focus:outline-none transition-colors text-white mb-2"
-                    style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 400 }}
-                  />
-                ))}
-              </div>
-
-              {/* Additional Info */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm text-gray-400 mb-2" style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 400 }}>Launch Date *</label>
-                  <input
-                    type="text"
-                    required
-                    placeholder="e.g., March 2024"
-                    value={formData.launch_date}
-                    onChange={(e) => setFormData({ ...formData, launch_date: e.target.value })}
-                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:border-blue-600 focus:outline-none transition-colors text-white"
-                    style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 400 }}
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm text-gray-400 mb-2" style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 400 }}>Author Name *</label>
-                  <input
-                    type="text"
-                    required
-                    value={formData.author_name}
-                    onChange={(e) => setFormData({ ...formData, author_name: e.target.value })}
-                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:border-blue-600 focus:outline-none transition-colors text-white"
-                    style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 400 }}
-                  />
-                </div>
-              </div>
-
-              {/* Image Upload */}
-              <div>
-                <label className="block text-sm text-gray-400 mb-2" style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 400 }}>Cover Image</label>
-                <div className="relative">
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleImageUpload}
-                    className="hidden"
-                    id="image-upload"
-                  />
-                  <label
-                    htmlFor="image-upload"
-                    className="flex items-center justify-center w-full bg-white/5 border border-white/10 rounded-xl px-4 py-8 hover:bg-white/10 transition-colors cursor-pointer"
-                  >
-                    {uploadingImage ? (
-                      <div className="flex items-center gap-2 text-blue-400">
-                        <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-400" />
-                        <span style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 400 }}>Uploading...</span>
+                    <div className="absolute inset-0 bg-gradient-to-br from-blue-600/0 to-blue-600/0 group-hover:from-blue-600/10 group-hover:to-blue-600/5 rounded-2xl transition-opacity" />
+                    
+                    <div className="relative">
+                      <div className="w-14 h-14 bg-blue-600/20 rounded-xl flex items-center justify-center mb-4 group-hover:bg-blue-600/30 transition-colors">
+                        <Icon className="w-7 h-7 text-blue-600" />
                       </div>
-                    ) : formData.image_url ? (
-                      <div className="text-center">
-                        <img src={formData.image_url} alt="Preview" className="max-h-32 mx-auto mb-2 rounded-lg" />
-                        <span className="text-green-400" style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 400 }}>Image uploaded successfully</span>
+                      
+                      <h3 className="text-xl font-bold mb-2 group-hover:text-blue-400 transition-colors" style={{ fontFamily: 'Orbitron, sans-serif' }}>
+                        {topic.title}
+                      </h3>
+                      
+                      <p className="text-gray-400 text-sm mb-4" style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 400 }}>
+                        {topic.description}
+                      </p>
+                      
+                      <div className="flex items-center gap-2 text-blue-600 text-sm font-semibold" style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 600 }}>
+                        <span>{topic.chapters.length} Chapters</span>
+                        <ChevronRight size={16} className="group-hover:translate-x-1 transition-transform" />
                       </div>
-                    ) : (
-                      <div className="text-center">
-                        <Upload size={32} className="mx-auto mb-2 text-gray-400" />
-                        <span className="text-gray-400" style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 400 }}>Click to upload cover image</span>
-                      </div>
-                    )}
-                  </label>
-                </div>
-              </div>
-
-              {/* Submit Button */}
-              <button
-                type="submit"
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white py-4 rounded-xl transition-all duration-300 flex items-center justify-center gap-2"
-                style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 600 }}
-              >
-                <Rocket size={20} />
-                Publish Rocket
-              </button>
-            </form>
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
           </div>
-        </div>
-      )}
+        )}
 
-      {/* Detailed Modal */}
-      {selectedRocket && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-sm" onClick={() => setSelectedRocket(null)}>
-          <div className="relative max-w-5xl w-full max-h-[90vh] overflow-y-auto bg-gradient-to-br from-gray-900 to-black border border-blue-600/30 rounded-3xl" onClick={(e) => e.stopPropagation()}>
-            <button
-              onClick={() => setSelectedRocket(null)}
-              className="absolute top-6 right-6 w-10 h-10 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center transition-colors z-10"
-            >
-              <X size={24} />
-            </button>
-
-            {/* Header */}
-            <div className="relative h-64 bg-gradient-to-br from-blue-600/30 to-blue-800/30 flex items-center justify-center border-b border-gray-800/50 overflow-hidden">
-              <img src={selectedRocket.image_url || 'black_logo.svg'} alt={selectedRocket.name} className="w-full h-full object-cover opacity-90" />
-              <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent" />
-              <div className="absolute bottom-6 left-6">
-                <span className={`px-4 py-2 rounded-full text-sm border ${getStatusColor(selectedRocket.status)} inline-block mb-3`} style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 500 }}>
-                  {selectedRocket.status}
-                </span>
-                <h2 className="text-4xl md:text-5xl font-bold mb-2" style={{ fontFamily: 'Orbitron, sans-serif' }}>
-                  {selectedRocket.name}
-                </h2>
-                <p className="text-blue-400 text-lg" style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 500 }}>
-                  {selectedRocket.tagline}
-                </p>
+        {selectedTopic && !selectedChapter && (
+          <div className="max-w-5xl mx-auto">
+            <div className="mb-8">
+              <div className="flex items-center gap-4 mb-4">
+                <div className="w-16 h-16 bg-blue-600/20 rounded-2xl flex items-center justify-center">
+                  {React.createElement(selectedTopic.icon, { className: "w-8 h-8 text-blue-600" })}
+                </div>
+                <div>
+                  <h2 className="text-4xl md:text-5xl font-bold" style={{ fontFamily: 'Orbitron, sans-serif' }}>
+                    {selectedTopic.title}
+                  </h2>
+                  <p className="text-gray-400 text-lg mt-2" style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 400 }}>
+                    {selectedTopic.description}
+                  </p>
+                </div>
               </div>
             </div>
 
-            {/* Content */}
-            <div className="p-8">
-              {/* Description */}
-              <div className="mb-8">
-                <h3 className="text-2xl font-bold mb-4 flex items-center gap-2" style={{ fontFamily: 'Orbitron, sans-serif' }}>
-                  <Info size={24} className="text-blue-600" />
-                  Overview
-                </h3>
-                <p className="text-gray-300 text-lg leading-relaxed" style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 400 }}>
-                  {selectedRocket.description}
-                </p>
-                <div className="flex items-center gap-6 mt-4 text-sm text-gray-500" style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 400 }}>
-                  <div className="flex items-center gap-2">
-                    <User size={16} />
-                    <span>Author: {selectedRocket.author_name}</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Calendar size={16} />
-                    <span>Launch Date: {selectedRocket.launch_date}</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Technical Specifications */}
-              <div className="mb-8">
-                <h3 className="text-2xl font-bold mb-4 flex items-center gap-2" style={{ fontFamily: 'Orbitron, sans-serif' }}>
-                  <Gauge size={24} className="text-blue-600" />
-                  Technical Specifications
-                </h3>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                  {Object.entries(selectedRocket.specs).map(([key, value]) => (
-                    <div key={key} className="bg-white/5 border border-white/10 rounded-xl p-4">
-                      <p className="text-gray-500 text-sm mb-2 capitalize" style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 400 }}>{key}</p>
-                      <p className="text-white text-xl font-bold" style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 600 }}>{value}</p>
+            <div className="space-y-4">
+              {selectedTopic.chapters.map((chapter, index) => (
+                <button
+                  key={chapter.id}
+                  onClick={() => setSelectedChapter(chapter)}
+                  className="group w-full bg-gradient-to-br from-gray-900/80 to-black/80 border border-gray-800/50 hover:border-blue-600/50 rounded-xl p-6 text-left transition-all hover:scale-[1.02] hover:shadow-xl hover:shadow-blue-600/10"
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-4">
+                      <div className="w-10 h-10 bg-blue-600/20 rounded-lg flex items-center justify-center font-bold text-blue-600" style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 600 }}>
+                        {index + 1}
+                      </div>
+                      <div>
+                        <h3 className="text-xl font-bold mb-1 group-hover:text-blue-400 transition-colors" style={{ fontFamily: 'Orbitron, sans-serif' }}>
+                          {chapter.title}
+                        </h3>
+                        <p className="text-gray-500 text-sm" style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 400 }}>
+                          Click to read chapter
+                        </p>
+                      </div>
                     </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Features */}
-              <div>
-                <h3 className="text-2xl font-bold mb-4 flex items-center gap-2" style={{ fontFamily: 'Orbitron, sans-serif' }}>
-                  <Layers size={24} className="text-blue-600" />
-                  Key Features
-                </h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  {selectedRocket.features.map((feature, index) => (
-                    <div key={index} className="flex items-center gap-3 bg-white/5 border border-white/10 rounded-xl p-4 hover:bg-white/10 transition-colors">
-                      <div className="w-2 h-2 bg-blue-600 rounded-full flex-shrink-0" />
-                      <span className="text-gray-300" style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 400 }}>{feature}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
+                    <ChevronRight className="w-6 h-6 text-gray-600 group-hover:text-blue-600 group-hover:translate-x-1 transition-all" />
+                  </div>
+                </button>
+              ))}
             </div>
           </div>
+        )}
+
+        {selectedChapter && (
+          <div className="max-w-4xl mx-auto">
+            <article className="bg-gradient-to-br from-gray-900/50 to-black/50 border border-gray-800/50 rounded-2xl p-8 md:p-12">
+              <h2 className="text-3xl md:text-4xl font-bold mb-6" style={{ fontFamily: 'Orbitron, sans-serif' }}>
+                {selectedChapter.title}
+              </h2>
+              
+              <div className="prose prose-invert prose-blue max-w-none">
+                {selectedChapter.content.split('\n\n').map((paragraph, index) => {
+                  if (paragraph.startsWith('**') && paragraph.endsWith('**')) {
+                    return (
+                      <h3 key={index} className="text-2xl font-bold mt-8 mb-4 text-blue-400" style={{ fontFamily: 'Orbitron, sans-serif' }}>
+                        {paragraph.replace(/\*\*/g, '')}
+                      </h3>
+                    );
+                  }
+                  
+                  const parts = paragraph.split(/(\*\*.*?\*\*)/g);
+                  return (
+                    <p key={index} className="text-gray-300 leading-relaxed text-lg mb-6" style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 400, lineHeight: '1.8' }}>
+                      {parts.map((part, i) => {
+                        if (part.startsWith('**') && part.endsWith('**')) {
+                          return <strong key={i} className="text-white font-semibold">{part.replace(/\*\*/g, '')}</strong>;
+                        }
+                        return part;
+                      })}
+                    </p>
+                  );
+                })}
+              </div>
+            </article>
+
+            {/* Navigation */}
+            <div className="mt-8 flex gap-4">
+              {selectedTopic.chapters.map((chapter, index) => {
+                if (chapter.id === selectedChapter.id) {
+                  const prevChapter = index > 0 ? selectedTopic.chapters[index - 1] : null;
+                  const nextChapter = index < selectedTopic.chapters.length - 1 ? selectedTopic.chapters[index + 1] : null;
+                  
+                  return (
+                    <div key="nav" className="flex gap-4 w-full">
+                      {prevChapter && (
+                        <button
+                          onClick={() => setSelectedChapter(prevChapter)}
+                          className="flex-1 bg-gradient-to-br from-gray-900/80 to-black/80 border border-gray-800/50 hover:border-blue-600/50 rounded-xl p-4 text-left transition-all hover:scale-105"
+                        >
+                          <div className="text-sm text-gray-500 mb-1" style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 400 }}>Previous</div>
+                          <div className="text-blue-400 font-semibold" style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 600 }}>{prevChapter.title}</div>
+                        </button>
+                      )}
+                      {nextChapter && (
+                        <button
+                          onClick={() => setSelectedChapter(nextChapter)}
+                          className="flex-1 bg-gradient-to-br from-gray-900/80 to-black/80 border border-gray-800/50 hover:border-blue-600/50 rounded-xl p-4 text-right transition-all hover:scale-105 ml-auto"
+                        >
+                          <div className="text-sm text-gray-500 mb-1" style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 400 }}>Next</div>
+                          <div className="text-blue-400 font-semibold" style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 600 }}>{nextChapter.title}</div>
+                        </button>
+                      )}
+                    </div>
+                  );
+                }
+                return null;
+              })}
+            </div>
+          </div>
+        )}
         </div>
-      )}
-      <Footer />
+      </main>
+
+      {/* Footer */}
+        <Footer />
     </div>
   );
 };
 
-export default RocketWiki;
+export default RocketryWiki;
