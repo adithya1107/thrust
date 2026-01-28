@@ -741,39 +741,36 @@ const RocketryWiki = ({ Header, headerProps }) => {
                   ) : (
                     <>
                       {/* Topics Grid */}
-                      <div className="grid sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+                      <div className="grid sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6 auto-rows-max">
                         {filteredTopics.map((topic, index) => (
-                          <div key={topic.id} className="relative group" style={{ animationDelay: `${index * 50}ms` }}>
+                          <div key={topic.id} className="relative group h-full" style={{ animationDelay: `${index * 50}ms` }}>
                             <button
                               onClick={() => {
                                 setSelectedTopic(topic);
                                 setExpandedTopic(topic.id);
                               }}
-                              className="w-full group relative bg-gradient-to-br from-gray-900/90 via-gray-800/90 to-gray-900/90 backdrop-blur-xl border border-gray-700/50 hover:border-blue-600/50 rounded-2xl p-7 text-left transition-all duration-300 hover:shadow-2xl hover:shadow-blue-600/10"
+                              className="w-full h-full flex flex-col group relative bg-gradient-to-br from-gray-900/90 via-gray-800/90 to-gray-900/90 backdrop-blur-xl border border-gray-700/50 hover:border-blue-600/50 rounded-2xl p-7 text-left transition-all duration-300 hover:shadow-2xl hover:shadow-blue-600/10"
                             >
                               <div className="absolute inset-0 bg-gradient-to-br from-blue-600/0 via-blue-600/0 to-blue-600/0 group-hover:from-blue-600/5 group-hover:to-purple-600/5 rounded-2xl transition-all duration-300" />
                               
                               <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-600/0 to-purple-600/0 group-hover:from-blue-600/20 group-hover:to-purple-600/20 rounded-2xl blur opacity-0 group-hover:opacity-100 transition-all duration-300 -z-10" />
                               
-                              <div className="relative">
-                                <div className="flex items-start justify-between mb-4">
-                                </div>
-
-                                <h3 className="text-xl font-bold mb-3 group-hover:text-blue-400 transition-colors" style={{ fontFamily: 'Orbitron, sans-serif' }}>
+                              <div className="relative flex flex-col h-full">
+                                <h3 className="text-xl font-bold mb-3 group-hover:text-blue-400 transition-colors line-clamp-2" style={{ fontFamily: 'Orbitron, sans-serif' }}>
                                   {topic.title}
                                 </h3>
                                 
-                                <p className="text-gray-400 text-sm mb-5 line-clamp-2" style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 400, lineHeight: '1.6' }}>
+                                <p className="text-gray-400 text-sm mb-5 flex-grow line-clamp-2" style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 400, lineHeight: '1.6' }}>
                                   {topic.description}
                                 </p>
                                 
-                                <div className="flex items-center justify-between pt-4 border-t border-gray-700/30">
+                                <div className="flex items-center justify-between pt-4 border-t border-gray-700/30 mt-auto">
                                   <div className="flex items-center gap-2 text-blue-400 text-sm font-semibold" style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 600 }}>
                                     <span className="px-3 py-1 bg-blue-600/10 rounded-full border border-blue-600/20">
                                       {topic.chapters?.length || 0} Chapters
                                     </span>
                                   </div>
-                                  <ChevronRight size={18} className="text-gray-600 group-hover:text-blue-400 group-hover:translate-x-1 transition-all duration-200" />
+                                  <ChevronRight size={18} className="text-gray-600 group-hover:text-blue-400 group-hover:translate-x-1 transition-all duration-200 flex-shrink-0" />
                                 </div>
                               </div>
                             </button>
@@ -1033,8 +1030,314 @@ const RocketryWiki = ({ Header, headerProps }) => {
         }
       `}</style>
 
-      {/* Modals remain the same... */}
-      {/* Password Prompt, Topic Modal, and Chapter Modal code here - keeping them as they were */}
+      {/* Password Prompt Modal */}
+      {showPasswordPrompt && (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-gradient-to-br from-gray-900/95 via-gray-800/95 to-gray-900/95 backdrop-blur-xl border border-gray-700/50 rounded-2xl p-8 max-w-sm w-full shadow-2xl shadow-black/50">
+            <div className="flex items-center gap-3 mb-6">
+              <h2 className="text-xl font-bold text-white" style={{ fontFamily: 'Orbitron, sans-serif' }}>
+                Admin Authentication
+              </h2>
+            </div>
+            
+            <p className="text-gray-400 mb-6" style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 400 }}>
+              Enter the admin password to proceed with this action.
+            </p>
+            
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Enter password"
+              className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700/50 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-blue-600/50 focus:ring-2 focus:ring-blue-600/20 transition-all duration-200 mb-6"
+              onKeyPress={(e) => {
+                if (e.key === 'Enter') {
+                  handlePasswordSubmit();
+                }
+              }}
+              style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 400 }}
+            />
+            
+            <div className="flex gap-4">
+              <button
+                onClick={handlePasswordSubmit}
+                className="flex-1 px-4 py-3 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600 text-white font-semibold rounded-xl transition-all duration-200 shadow-lg shadow-blue-600/30 border border-blue-500/50"
+                style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 600 }}
+              >
+                Verify
+              </button>
+              <button
+                onClick={() => {
+                  setShowPasswordPrompt(false);
+                  setPassword('');
+                }}
+                className="flex-1 px-4 py-3 bg-gray-700/50 hover:bg-gray-700/80 text-gray-300 font-semibold rounded-xl transition-all duration-200 border border-gray-600/50"
+                style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 600 }}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Topic Modal */}
+      {showTopicModal && authenticated && (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4 overflow-y-auto">
+          <div className="bg-gradient-to-br from-gray-900/95 via-gray-800/95 to-gray-900/95 backdrop-blur-xl border border-gray-700/50 rounded-2xl p-8 max-w-md w-full shadow-2xl shadow-black/50 my-8">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-xl font-bold text-white" style={{ fontFamily: 'Orbitron, sans-serif' }}>
+                {editingTopic ? 'Edit Topic' : 'Add Topic'}
+              </h2>
+              <button
+                onClick={() => {
+                  setShowTopicModal(false);
+                  setEditingTopic(null);
+                  setTopicFormData({ title: '', description: '', display_order: 0 });
+                  setAuthenticated(false);
+                }}
+                className="text-gray-400 hover:text-white transition-colors"
+              >
+                <X size={24} />
+              </button>
+            </div>
+            
+            <div className="space-y-4 mb-6">
+              <div>
+                <label className="block text-sm font-semibold text-gray-300 mb-2" style={{ fontFamily: 'Rajdhani, sans-serif' }}>
+                  Title
+                </label>
+                <input
+                  type="text"
+                  value={topicFormData.title}
+                  onChange={(e) => setTopicFormData({ ...topicFormData, title: e.target.value })}
+                  placeholder="Topic title"
+                  className="w-full px-4 py-2 bg-gray-800/50 border border-gray-700/50 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-blue-600/50 focus:ring-2 focus:ring-blue-600/20 transition-all duration-200"
+                  style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 400 }}
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-semibold text-gray-300 mb-2" style={{ fontFamily: 'Rajdhani, sans-serif' }}>
+                  Description
+                </label>
+                <textarea
+                  value={topicFormData.description}
+                  onChange={(e) => setTopicFormData({ ...topicFormData, description: e.target.value })}
+                  placeholder="Topic description"
+                  rows="4"
+                  className="w-full px-4 py-2 bg-gray-800/50 border border-gray-700/50 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-blue-600/50 focus:ring-2 focus:ring-blue-600/20 transition-all duration-200 resize-none"
+                  style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 400 }}
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-semibold text-gray-300 mb-2" style={{ fontFamily: 'Rajdhani, sans-serif' }}>
+                  Display Order
+                </label>
+                <input
+                  type="number"
+                  value={topicFormData.display_order}
+                  onChange={(e) => setTopicFormData({ ...topicFormData, display_order: parseInt(e.target.value) })}
+                  className="w-full px-4 py-2 bg-gray-800/50 border border-gray-700/50 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-blue-600/50 focus:ring-2 focus:ring-blue-600/20 transition-all duration-200"
+                  style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 400 }}
+                />
+              </div>
+            </div>
+            
+            <div className="flex gap-4">
+              <button
+                onClick={editingTopic ? handleUpdateTopic : handleAddTopic}
+                className="flex-1 px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600 text-white font-semibold rounded-xl transition-all duration-200 shadow-lg shadow-blue-600/30 border border-blue-500/50"
+                style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 600 }}
+              >
+                {editingTopic ? 'Update' : 'Create'}
+              </button>
+              <button
+                onClick={() => {
+                  setShowTopicModal(false);
+                  setEditingTopic(null);
+                  setTopicFormData({ title: '', description: '', display_order: 0 });
+                  setAuthenticated(false);
+                }}
+                className="flex-1 px-4 py-2 bg-gray-700/50 hover:bg-gray-700/80 text-gray-300 font-semibold rounded-xl transition-all duration-200 border border-gray-600/50"
+                style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 600 }}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Chapter Modal */}
+      {showChapterModal && authenticated && (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4 overflow-y-auto">
+          <div className="bg-gradient-to-br from-gray-900/95 via-gray-800/95 to-gray-900/95 backdrop-blur-xl border border-gray-700/50 rounded-2xl p-8 max-w-2xl w-full shadow-2xl shadow-black/50 my-8">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-xl font-bold text-white" style={{ fontFamily: 'Orbitron, sans-serif' }}>
+                {editingChapter ? 'Edit Chapter' : 'Add Chapter'}
+              </h2>
+              <button
+                onClick={() => {
+                  setShowChapterModal(false);
+                  setEditingChapter(null);
+                  setChapterFormData({ title: '', content: '', display_order: 0 });
+                  setAuthenticated(false);
+                }}
+                className="text-gray-400 hover:text-white transition-colors"
+              >
+                <X size={24} />
+              </button>
+            </div>
+            
+            <div className="space-y-4 mb-6">
+              <div>
+                <label className="block text-sm font-semibold text-gray-300 mb-2" style={{ fontFamily: 'Rajdhani, sans-serif' }}>
+                  Title
+                </label>
+                <input
+                  type="text"
+                  value={chapterFormData.title}
+                  onChange={(e) => setChapterFormData({ ...chapterFormData, title: e.target.value })}
+                  placeholder="Chapter title"
+                  className="w-full px-4 py-2 bg-gray-800/50 border border-gray-700/50 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-blue-600/50 focus:ring-2 focus:ring-blue-600/20 transition-all duration-200"
+                  style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 400 }}
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-semibold text-gray-300 mb-2" style={{ fontFamily: 'Rajdhani, sans-serif' }}>
+                  Content
+                </label>
+                <textarea
+                  ref={contentTextareaRef}
+                  value={chapterFormData.content}
+                  onChange={(e) => setChapterFormData({ ...chapterFormData, content: e.target.value })}
+                  placeholder="Chapter content (supports Markdown)"
+                  rows="8"
+                  className="w-full px-4 py-2 bg-gray-800/50 border border-gray-700/50 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-blue-600/50 focus:ring-2 focus:ring-blue-600/20 transition-all duration-200 resize-none font-mono text-sm"
+                  style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 400 }}
+                />
+                <div className="mt-2 flex items-center gap-2">
+                  <label className="px-3 py-2 bg-blue-600/20 hover:bg-blue-600/30 text-blue-400 font-semibold rounded-lg cursor-pointer transition-all duration-200 border border-blue-600/20 flex items-center gap-2 text-sm" style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 600 }}>
+                    <Image size={14} />
+                    Add Image
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleContentImageUpload}
+                      disabled={uploadingContentImage}
+                      className="hidden"
+                    />
+                  </label>
+                  {uploadingContentImage && <span className="text-gray-400 text-sm">Uploading...</span>}
+                </div>
+              </div>
+              
+              <div>
+                <label className="block text-sm font-semibold text-gray-300 mb-2" style={{ fontFamily: 'Rajdhani, sans-serif' }}>
+                  Display Order
+                </label>
+                <input
+                  type="number"
+                  value={chapterFormData.display_order}
+                  onChange={(e) => setChapterFormData({ ...chapterFormData, display_order: parseInt(e.target.value) })}
+                  className="w-full px-4 py-2 bg-gray-800/50 border border-gray-700/50 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-blue-600/50 focus:ring-2 focus:ring-blue-600/20 transition-all duration-200"
+                  style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 400 }}
+                />
+              </div>
+            </div>
+            
+            <div className="flex gap-4">
+              <button
+                onClick={editingChapter ? handleUpdateChapter : handleAddChapter}
+                className="flex-1 px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600 text-white font-semibold rounded-xl transition-all duration-200 shadow-lg shadow-blue-600/30 border border-blue-500/50"
+                style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 600 }}
+              >
+                {editingChapter ? 'Update' : 'Create'}
+              </button>
+              <button
+                onClick={() => {
+                  setShowChapterModal(false);
+                  setEditingChapter(null);
+                  setChapterFormData({ title: '', content: '', display_order: 0 });
+                  setAuthenticated(false);
+                }}
+                className="flex-1 px-4 py-2 bg-gray-700/50 hover:bg-gray-700/80 text-gray-300 font-semibold rounded-xl transition-all duration-200 border border-gray-600/50"
+                style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 600 }}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Confirmation Modals */}
+      {topicToDelete && authenticated && (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-gradient-to-br from-gray-900/95 via-gray-800/95 to-gray-900/95 backdrop-blur-xl border border-gray-700/50 rounded-2xl p-8 max-w-sm w-full shadow-2xl shadow-black/50">
+            <h2 className="text-xl font-bold text-white mb-4" style={{ fontFamily: 'Orbitron, sans-serif' }}>
+              Delete Topic?
+            </h2>
+            <p className="text-gray-400 mb-6" style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 400 }}>
+              Are you sure you want to delete "{topicToDelete.title}"? All chapters in this topic will also be deleted. This action cannot be undone.
+            </p>
+            <div className="flex gap-4">
+              <button
+                onClick={handleDeleteTopic}
+                className="flex-1 px-4 py-2 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 text-white font-semibold rounded-xl transition-all duration-200 shadow-lg shadow-red-600/30 border border-red-500/50"
+                style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 600 }}
+              >
+                Delete
+              </button>
+              <button
+                onClick={() => {
+                  setTopicToDelete(null);
+                  setAuthenticated(false);
+                }}
+                className="flex-1 px-4 py-2 bg-gray-700/50 hover:bg-gray-700/80 text-gray-300 font-semibold rounded-xl transition-all duration-200 border border-gray-600/50"
+                style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 600 }}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {chapterToDelete && authenticated && (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-gradient-to-br from-gray-900/95 via-gray-800/95 to-gray-900/95 backdrop-blur-xl border border-gray-700/50 rounded-2xl p-8 max-w-sm w-full shadow-2xl shadow-black/50">
+            <h2 className="text-xl font-bold text-white mb-4" style={{ fontFamily: 'Orbitron, sans-serif' }}>
+              Delete Chapter?
+            </h2>
+            <p className="text-gray-400 mb-6" style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 400 }}>
+              Are you sure you want to delete "{chapterToDelete.title}"? This action cannot be undone.
+            </p>
+            <div className="flex gap-4">
+              <button
+                onClick={handleDeleteChapter}
+                className="flex-1 px-4 py-2 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 text-white font-semibold rounded-xl transition-all duration-200 shadow-lg shadow-red-600/30 border border-red-500/50"
+                style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 600 }}
+              >
+                Delete
+              </button>
+              <button
+                onClick={() => {
+                  setChapterToDelete(null);
+                  setAuthenticated(false);
+                }}
+                className="flex-1 px-4 py-2 bg-gray-700/50 hover:bg-gray-700/80 text-gray-300 font-semibold rounded-xl transition-all duration-200 border border-gray-600/50"
+                style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 600 }}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
