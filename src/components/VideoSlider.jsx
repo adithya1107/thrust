@@ -19,6 +19,7 @@ export const VideoSlider = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
   const videoRefs = useRef([]);
+  const isAnimatingRef = useRef(false);
 
   // Font loading
   useEffect(() => {
@@ -37,10 +38,14 @@ export const VideoSlider = () => {
       try {
         if (i === currentSlide) {
           v.currentTime = 0;
-          const playPromise = v.play();
-          if (playPromise && typeof playPromise.then === 'function') {
-            playPromise.catch(() => { /* ignore play errors (muted/autoplay policies) */ });
-          }
+          // Delay play slightly to ensure transition covers the first frame
+          const playTimer = setTimeout(() => {
+            const playPromise = v.play();
+            if (playPromise && typeof playPromise.then === 'function') {
+              playPromise.catch(() => { /* ignore play errors (muted/autoplay policies) */ });
+            }
+          }, 100);
+          return () => clearTimeout(playTimer);
         } else {
           v.pause();
           v.currentTime = 0;
@@ -52,18 +57,26 @@ export const VideoSlider = () => {
   }, [currentSlide]);
 
   const handleNext = () => {
-    if (!isAnimating) {
+    if (!isAnimatingRef.current) {
+      isAnimatingRef.current = true;
       setIsAnimating(true);
       setCurrentSlide((prev) => (prev + 1) % slides.length);
-      setTimeout(() => setIsAnimating(false), 1000);
+      setTimeout(() => {
+        isAnimatingRef.current = false;
+        setIsAnimating(false);
+      }, 500);
     }
   };
 
   const handlePrev = () => {
-    if (!isAnimating) {
+    if (!isAnimatingRef.current) {
+      isAnimatingRef.current = true;
       setIsAnimating(true);
       setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
-      setTimeout(() => setIsAnimating(false), 1000);
+      setTimeout(() => {
+        isAnimatingRef.current = false;
+        setIsAnimating(false);
+      }, 500);
     }
   };
 
@@ -91,10 +104,12 @@ export const VideoSlider = () => {
             preload="auto"
             onEnded={() => {
               // Advance to next slide when the current video ends
-              if (!isAnimating) {
-                setIsAnimating(true);
+              if (!isAnimatingRef.current) {
+                isAnimatingRef.current = true;
                 setCurrentSlide((prev) => (prev + 1) % slides.length);
-                setTimeout(() => setIsAnimating(false), 1000);
+                setTimeout(() => {
+                  isAnimatingRef.current = false;
+                }, 500);
               }
             }}
             style={{
@@ -104,6 +119,15 @@ export const VideoSlider = () => {
           >
             <source src={slide.videoUrl} type="video/mp4" />
           </video>
+
+          {/* Fade cover to hide initial frame during transition */}
+          <div 
+            className="absolute inset-0 bg-black z-50 pointer-events-none"
+            style={{
+              opacity: index === currentSlide ? 0 : 1,
+              transition: "opacity 1.2s cubic-bezier(0.77, 0, 0.175, 1)"
+            }}
+          />
           
           {/* Dark overlay with gradient */}
           <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/70 z-10" />
