@@ -11,7 +11,7 @@ const Projects = ({ onNavigateToProject }) => {
       name: 'Varuna', 
       category: 'Current Project', 
       description: "Varuna is thrustMIT's current flagship project, representing our next generation of high-power rocketry. Stay tuned for more updates as we push the boundaries of innovation and performance.",
-      image: 'https://pub-5e90a2f5e8c44905a47c1b15177024fe.r2.dev/public/black_logo.svg', 
+      image: 'question-mark', 
       details: {
         maxAltitude: 'TBA',
         duration: '2025-26',
@@ -40,7 +40,7 @@ const Projects = ({ onNavigateToProject }) => {
       description: "AgniAstra was thrustMIT's debut entry in the 2024 Spaceport America Cup under the 30K COTS category. Featuring a glass fibre and carbon fibre airframe with an Aluminium 6061 internal structure, it carried a CanSat payload to conduct real-time pose estimation via computer vision. The SRAD modular flight computer managed recovery, data logging, and telemetry.",
       image: 'https://pub-5e90a2f5e8c44905a47c1b15177024fe.r2.dev/public/projects/agni.png',
       details: {
-        maxAltitude: '30,000 ft',
+        maxAltitude: '17,010 ft',
         duration: '2023-24',
         motor: 'Cesaroni N5800-P',
         payload: '3D Vision & Pose Estimation'
@@ -66,7 +66,7 @@ const Projects = ({ onNavigateToProject }) => {
       description: "Rayquaza was thrustMIT's 4th developed rocket and project entry to the 2022 Spaceport America Cup. Comprising a carbon fibre airframe and Aluminium 6063 internal structure, Project Rayquaza was our first ever rocket to reach 10,000 ft. Rayquaza came 4th in the James Barrowman Award with a percentage error of less than 0.3%.",
       image: 'https://pub-5e90a2f5e8c44905a47c1b15177024fe.r2.dev/public/projects/ray.png',
       details: {
-        maxAltitude: '10,000 ft',
+        maxAltitude: '11,662 ft',
         duration: '2021-22',
         motor: 'Cesaroni M3400-P',
         payload: 'Acoustic Dampening of CNT'
@@ -92,7 +92,7 @@ const Projects = ({ onNavigateToProject }) => {
       description: "Arya, launched at the 2019 Spaceport America Cup, was our 2nd rocket made entirely out of carbon fibre with a target apogee of 3 km. It featured Aluminium 6061-T6 bulkheads and centering rings. The team successfully launched Lapwing II, a subscale rocket used to test recovery systems.",
       image: 'https://pub-5e90a2f5e8c44905a47c1b15177024fe.r2.dev/public/projects/arya.png',
       details: {
-        maxAltitude: '3,000 m',
+        maxAltitude: '2,047 ft',
         duration: '2018-19',
         motor: 'Aerotech M1845-P',
         payload: 'Non-Newtonian Fluid Damper'
@@ -105,7 +105,7 @@ const Projects = ({ onNavigateToProject }) => {
       description: "Vyom was our first rocket, launched at the 2018 Spaceport America Cup. It featured a glass fibre airframe, couplers and fin attachments, and a nose tip made of ABS. It reached an apogee of 1.2 km. Project Vyom won the Best Debutant Award at the 2018 SA Cup.",
       image: 'https://pub-5e90a2f5e8c44905a47c1b15177024fe.r2.dev/public/projects/vyom.png',
       details: {
-        maxAltitude: '1,200 m',
+        maxAltitude: '3,937 ft',
         duration: '2017-18',
         motor: 'Aerotech M1845-P',
         payload: 'Non Functional'
@@ -156,11 +156,31 @@ const Projects = ({ onNavigateToProject }) => {
                   
                   {/* Image Container */}
                   <div className="relative h-64 flex items-center justify-center border-b border-gray-800/50 overflow-hidden">
-                    <img 
-                      src={project.image} 
-                      alt={`${project.name} logo`}
-                      className="w-full h-full object-contain p-8 group-hover:scale-110 transition-transform duration-500"
-                    />
+                    {project.image === 'question-mark' ? (
+                      <div className="relative flex items-center justify-center w-full h-full">
+                        {/* Animated background circles */}
+                        <div className="absolute w-32 h-32 rounded-full bg-blue-600/10 blur-xl group-hover:bg-blue-600/20 transition-all duration-500" />
+                        <div className="absolute w-40 h-40 rounded-full border-2 border-blue-600/20 group-hover:border-blue-600/40 transition-all duration-500 group-hover:scale-110" />
+                        <div className="absolute w-48 h-48 rounded-full border border-blue-600/10 group-hover:border-blue-600/20 transition-all duration-500 group-hover:scale-125" />
+                        
+                        {/* Question mark */}
+                        <div className="relative">
+                          <div className="text-8xl font-black text-transparent bg-clip-text bg-gradient-to-br from-blue-400 to-blue-600 group-hover:from-blue-300 group-hover:to-blue-500 transition-all duration-500 group-hover:scale-110" style={{ fontFamily: 'Orbitron, sans-serif' }}>
+                            ?
+                          </div>
+                          {/* Glow effect */}
+                          <div className="absolute inset-0 text-8xl font-black text-blue-600 blur-2xl opacity-30 group-hover:opacity-50 transition-opacity duration-500" style={{ fontFamily: 'Orbitron, sans-serif' }}>
+                            ?
+                          </div>
+                        </div>
+                      </div>
+                    ) : (
+                      <img 
+                        src={project.image} 
+                        alt={`${project.name} logo`}
+                        className="w-full h-full object-contain p-8 group-hover:scale-110 transition-transform duration-500"
+                      />
+                    )}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
                   </div>
 

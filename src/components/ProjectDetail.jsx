@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
-import { Rocket, Clock, Users, MapPin, ChevronRight, ArrowLeft, Gauge, Zap, Package, Layers, ChevronLeft } from 'lucide-react';
+import { Rocket, Clock, Users, MapPin, ChevronRight, ArrowLeft, Gauge, Zap, Package, Layers, ChevronLeft, FileText } from 'lucide-react';
 
-const ProjectDetail = ({ Header, Footer, projectId, onNavigateHome, onNavigateToProjects, onNavigateToProject, headerProps }) => {
+const ProjectDetail = ({ Header, Footer, projectId, onNavigateHome, onNavigateToProjects, onNavigateToProject, headerProps, onScrollToSection, onNavigateToRocketWiki, onNavigateToBlog }) => {
   const projects = [
     {
       id: 'vayuvega',
@@ -9,6 +9,7 @@ const ProjectDetail = ({ Header, Footer, projectId, onNavigateHome, onNavigateTo
       category: '30K COTS', 
       description: "Vayuvega was thrustMIT's latest project and second 30K COTS class rocket, launched at the 2025 IREC. Vayuvega achieved an apogee of 29,432 feet and was subsequently recovered with no damage to the airframe and systems. Vayuvega featured a payload experiment aiming to validate real-time visual tracking in extreme flight conditions, for which the team won the 2nd Place Prize in the SDL Payload Challenge. Project Vayuvega is our most successful rocket yet, achieving 4th position in the 30K COTS category and 22nd overall at the 2025 IREC.",
       image: 'https://ik.imagekit.io/wns4q4r9n2/Projects/Renders/vayuvega_Uo8rkzyzy.png?updatedAt=1753918489502',
+      reportUrl: 'https://pub-5e90a2f5e8c44905a47c1b15177024fe.r2.dev/public/technical-report/thrustMIT-info%20-%20Google%20Sheets_compressed.pdf',
       details: {
         maxAltitude: '29,432 ft',
         duration: '2024-25',
@@ -21,7 +22,7 @@ const ProjectDetail = ({ Header, Footer, projectId, onNavigateHome, onNavigateTo
         totalDiameter: '126 mm',
         totalWeight: '36.80 kg',
         category: '30K COTS',
-        achievement: '4th in 30K COTS, 22nd Overall'
+        achievement: '4th in 30K COTS, 2nd Place SDL Payload Challenge'
       }
     },
     { 
@@ -30,8 +31,9 @@ const ProjectDetail = ({ Header, Footer, projectId, onNavigateHome, onNavigateTo
       category: '30K COTS', 
       description: "AgniAstra was thrustMIT's debut entry in the 2024 Spaceport America Cup under the 30K COTS category. Featuring a glass fibre and carbon fibre airframe with an Aluminium 6061 internal structure, it carried a CanSat payload to conduct real-time pose estimation via computer vision. The SRAD modular flight computer managed recovery, data logging, and telemetry. Project AgniAstra ranked as Asia's top 30K COTS team.",
       image: 'https://ik.imagekit.io/wns4q4r9n2/Projects/Renders/rocket%20render%20thrustmit_TNOILvtU5.png?updatedAt=1753908331004',
+      reportUrl: 'https://pub-5e90a2f5e8c44905a47c1b15177024fe.r2.dev/public/technical-report/thrustMIT-info%20-%20Google%20Sheets_compressed.pdf',
       details: {
-        maxAltitude: '30,000 ft',
+        maxAltitude: '17,010 ft',
         duration: '2023-24',
         height: '3.19 m',
         diameter: '124 mm',
@@ -51,6 +53,7 @@ const ProjectDetail = ({ Header, Footer, projectId, onNavigateHome, onNavigateTo
       category: '10K COTS', 
       description: "Altair was thrustMIT's 10K COTS submission to the 2023 Spaceport America Cup. The rocket featured leading-edge extended fins and crankshaft-airbrakes to optimize flow separation. Project Altair was our most accurate launch with a 0.51% percentage error in apogee, reaching 10,331 ft.",
       image: 'https://ik.imagekit.io/wns4q4r9n2/Projects/Renders/altair_IoG2kLg-73.png?updatedAt=1753914870160',
+      reportUrl: 'https://pub-5e90a2f5e8c44905a47c1b15177024fe.r2.dev/public/technical-report/thrustMIT-info%20-%20Google%20Sheets_compressed.pdf',
       details: {
         maxAltitude: '10,331 ft',
         duration: '2022-23',
@@ -72,8 +75,9 @@ const ProjectDetail = ({ Header, Footer, projectId, onNavigateHome, onNavigateTo
       category: '10K COTS', 
       description: "Rayquaza was thrustMIT's 4th developed rocket and project entry to the 2022 Spaceport America Cup. Comprising a carbon fibre airframe and Aluminium 6063 internal structure, Project Rayquaza was our first ever rocket to reach 10,000 ft. Rayquaza came 4th in the James Barrowman Award with a percentage error of less than 0.3%.",
       image: 'https://ik.imagekit.io/wns4q4r9n2/Projects/Renders/rayquaza_2-xs2pG3B.png?updatedAt=1753914869235',
+      reportUrl: 'https://pub-5e90a2f5e8c44905a47c1b15177024fe.r2.dev/public/technical-report/thrustMIT-info%20-%20Google%20Sheets_compressed.pdf',
       details: {
-        maxAltitude: '10,000 ft',
+        maxAltitude: '11,662 ft',
         duration: '2021-22',
         height: '2.76 m',
         diameter: '150 mm',
@@ -93,6 +97,7 @@ const ProjectDetail = ({ Header, Footer, projectId, onNavigateHome, onNavigateTo
       category: '10K COTS', 
       description: "Phoenix was thrustMIT's 3rd rocket and official entry to the 2021 Spaceport America Cup. With a carbon fibre airframe and glass fibre Avionics Bay, the rocket featured a functional payload experiment aiming to accurately measure and log vibrations experienced by a CanSat during flight using a piezoelectric transducer. Project Phoenix achieved 7th position in the 10K COTS category and 16th position overall.",
       image: 'https://ik.imagekit.io/wns4q4r9n2/Projects/Renders/phoenix_8Nh7jG9bA_8isaJXVLu.png?updatedAt=1753914869369',
+      reportUrl: 'https://pub-5e90a2f5e8c44905a47c1b15177024fe.r2.dev/public/technical-report/thrustMIT-info%20-%20Google%20Sheets_compressed.pdf',
       details: {
         maxAltitude: '10,000 ft',
         duration: '2020-21',
@@ -114,8 +119,9 @@ const ProjectDetail = ({ Header, Footer, projectId, onNavigateHome, onNavigateTo
       category: 'Sounding Rocket', 
       description: "Arya, launched at the 2019 Spaceport America Cup, was our 2nd rocket made entirely out of carbon fibre with a target apogee of 3 km. It featured Aluminium 6061-T6 bulkheads and centering rings. The team successfully launched Lapwing II, a subscale rocket used to test recovery systems. Project Arya featured an in-house reefing mechanism to optimize recovery operations.",
       image: 'https://ik.imagekit.io/wns4q4r9n2/Projects/Renders/arya_K-kwONsP_.png?updatedAt=1753914869619',
+      reportUrl: 'https://pub-5e90a2f5e8c44905a47c1b15177024fe.r2.dev/public/technical-report/thrustMIT-info%20-%20Google%20Sheets_compressed.pdf',
       details: {
-        maxAltitude: '3,000 m',
+        maxAltitude: '2,047 ft',
         duration: '2018-19',
         height: '2.45 m',
         diameter: '140 mm',
@@ -135,8 +141,9 @@ const ProjectDetail = ({ Header, Footer, projectId, onNavigateHome, onNavigateTo
       category: 'Debut Rocket', 
       description: "Vyom was our first rocket, launched at the 2018 Spaceport America Cup. It featured a glass fibre airframe, couplers and fin attachments, and a nose tip made of ABS. It reached an apogee of 1.2 km. Project Vyom won the Best Debutant Award at the 2018 SA Cup.",
       image: 'https://ik.imagekit.io/wns4q4r9n2/Projects/Renders/vyom_hcjagHclU_JJM559muPW.png?updatedAt=1753914869355',
+      reportUrl: 'https://pub-5e90a2f5e8c44905a47c1b15177024fe.r2.dev/public/technical-report/thrustMIT-info%20-%20Google%20Sheets_compressed.pdf',
       details: {
-        maxAltitude: '1,200 m',
+        maxAltitude: '3,937 ft',
         duration: '2017-18',
         height: '2.54 m',
         diameter: '150 mm',
@@ -171,6 +178,13 @@ const ProjectDetail = ({ Header, Footer, projectId, onNavigateHome, onNavigateTo
   const getRotationDegree = (projectName) => {
     const reverseRotationProjects = ['Rayquaza', 'Arya', 'Vyom'];
     return reverseRotationProjects.includes(projectName) ? -90 : 90;
+  };
+
+  // Handle technical report click
+  const handleViewReport = () => {
+    if (project.reportUrl) {
+      window.open(project.reportUrl, '_blank', 'noopener,noreferrer');
+    }
   };
 
   if (!project) {
@@ -279,9 +293,23 @@ const ProjectDetail = ({ Header, Footer, projectId, onNavigateHome, onNavigateTo
             {/* Left Column: Title, Description, and Specs */}
             <div className="space-y-8">
               <div>
-                <h1 className="text-5xl md:text-7xl font-bold mb-6" style={{ fontFamily: 'Orbitron, sans-serif' }}>
-                  {project.name}
-                </h1>
+                <div className="flex flex-col sm:flex-row sm:items-center gap-4 mb-6">
+                  <h1 className="text-5xl md:text-7xl font-bold" style={{ fontFamily: 'Orbitron, sans-serif' }}>
+                    {project.name}
+                  </h1>
+                  {project.reportUrl && (
+                    <button
+                      onClick={handleViewReport}
+                      className="group flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600 text-white rounded-lg transition-all hover:scale-105 shadow-lg shadow-blue-500/50"
+                      aria-label="View Technical Report"
+                    >
+                      <FileText size={18} className="group-hover:rotate-12 transition-transform" />
+                      <span className="text-sm font-semibold whitespace-nowrap" style={{ fontFamily: 'Rajdhani, sans-serif' }}>
+                        Technical Report
+                      </span>
+                    </button>
+                  )}
+                </div>
                 <p className="text-lg md:text-xl text-gray-300 leading-relaxed" style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 400, letterSpacing: '0.03em' }}>
                   {project.description}
                 </p>
@@ -346,7 +374,12 @@ const ProjectDetail = ({ Header, Footer, projectId, onNavigateHome, onNavigateTo
         </div>
       </section>
 
-      <Footer />
+      <Footer 
+        onNavigateHome={onNavigateHome}
+        onScrollToSection={onScrollToSection}
+        onNavigateToRocketWiki={onNavigateToRocketWiki}
+        onNavigateToBlog={onNavigateToBlog}
+      />
 
       {/* Side Navigation Arrows */}
       <button
