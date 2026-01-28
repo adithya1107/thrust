@@ -9,7 +9,7 @@ const ProjectDetail = ({ Header, Footer, projectId, onNavigateHome, onNavigateTo
       category: '30K COTS', 
       description: "Vayuvega was thrustMIT's latest project and second 30K COTS class rocket, launched at the 2025 IREC. Vayuvega achieved an apogee of 29,432 feet and was subsequently recovered with no damage to the airframe and systems. Vayuvega featured a payload experiment aiming to validate real-time visual tracking in extreme flight conditions, for which the team won the 2nd Place Prize in the SDL Payload Challenge. Project Vayuvega is our most successful rocket yet, achieving 4th position in the 30K COTS category and 22nd overall at the 2025 IREC.",
       image: 'https://ik.imagekit.io/wns4q4r9n2/Projects/Renders/vayuvega_Uo8rkzyzy.png?updatedAt=1753918489502',
-      reportUrl: 'https://pub-5e90a2f5e8c44905a47c1b15177024fe.r2.dev/public/technical-report/thrustMIT-info%20-%20Google%20Sheets_compressed.pdf',
+      reportUrl: 'https://pub-5e90a2f5e8c44905a47c1b15177024fe.r2.dev/public/technical-report/Vayuvega.pdf',
       details: {
         maxAltitude: '29,432 ft',
         duration: '2024-25',
@@ -141,7 +141,7 @@ const ProjectDetail = ({ Header, Footer, projectId, onNavigateHome, onNavigateTo
       category: 'Debut Rocket', 
       description: "Vyom was our first rocket, launched at the 2018 Spaceport America Cup. It featured a glass fibre airframe, couplers and fin attachments, and a nose tip made of ABS. It reached an apogee of 1.2 km. Project Vyom won the Best Debutant Award at the 2018 SA Cup.",
       image: 'https://ik.imagekit.io/wns4q4r9n2/Projects/Renders/vyom_hcjagHclU_JJM559muPW.png?updatedAt=1753914869355',
-      reportUrl: 'https://pub-5e90a2f5e8c44905a47c1b15177024fe.r2.dev/public/technical-report/thrustMIT-info%20-%20Google%20Sheets_compressed.pdf',
+      reportUrl: 'https://pub-5e90a2f5e8c44905a47c1b15177024fe.r2.dev/public/technical-report/Vyom.pdf',
       details: {
         maxAltitude: '3,937 ft',
         duration: '2017-18',
