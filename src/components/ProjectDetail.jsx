@@ -31,7 +31,7 @@ const ProjectDetail = ({ Header, Footer, projectId, onNavigateHome, onNavigateTo
       category: '30K COTS', 
       description: "AgniAstra was thrustMIT's debut entry in the 2024 Spaceport America Cup under the 30K COTS category. Featuring a glass fibre and carbon fibre airframe with an Aluminium 6061 internal structure, it carried a CanSat payload to conduct real-time pose estimation via computer vision. The SRAD modular flight computer managed recovery, data logging, and telemetry. Project AgniAstra ranked as Asia's top 30K COTS team.",
       image: 'https://ik.imagekit.io/wns4q4r9n2/Projects/Renders/rocket%20render%20thrustmit_TNOILvtU5.png?updatedAt=1753908331004',
-      reportUrl: 'https://pub-5e90a2f5e8c44905a47c1b15177024fe.r2.dev/public/technical-report/thrustMIT-info%20-%20Google%20Sheets_compressed.pdf',
+      reportUrl: 'https://pub-5e90a2f5e8c44905a47c1b15177024fe.r2.dev/public/technical-report/agniastra.pdf',
       details: {
         maxAltitude: '17,010 ft',
         duration: '2023-24',
