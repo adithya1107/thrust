@@ -53,7 +53,7 @@ const ProjectDetail = ({ Header, Footer, projectId, onNavigateHome, onNavigateTo
       category: '10K COTS', 
       description: "Altair was thrustMIT's 10K COTS submission to the 2023 Spaceport America Cup. The rocket featured leading-edge extended fins and crankshaft-airbrakes to optimize flow separation. Project Altair was our most accurate launch with a 0.51% percentage error in apogee, reaching 10,331 ft.",
       image: 'https://ik.imagekit.io/wns4q4r9n2/Projects/Renders/altair_IoG2kLg-73.png?updatedAt=1753914870160',
-      reportUrl: 'https://pub-5e90a2f5e8c44905a47c1b15177024fe.r2.dev/public/technical-report/thrustMIT-info%20-%20Google%20Sheets_compressed.pdf',
+      reportUrl: 'https://pub-5e90a2f5e8c44905a47c1b15177024fe.r2.dev/public/technical-report/Altair.pdf',
       details: {
         maxAltitude: '10,331 ft',
         duration: '2022-23',
@@ -75,7 +75,6 @@ const ProjectDetail = ({ Header, Footer, projectId, onNavigateHome, onNavigateTo
       category: '10K COTS', 
       description: "Rayquaza was thrustMIT's 4th developed rocket and project entry to the 2022 Spaceport America Cup. Comprising a carbon fibre airframe and Aluminium 6063 internal structure, Project Rayquaza was our first ever rocket to reach 10,000 ft. Rayquaza came 4th in the James Barrowman Award with a percentage error of less than 0.3%.",
       image: 'https://ik.imagekit.io/wns4q4r9n2/Projects/Renders/rayquaza_2-xs2pG3B.png?updatedAt=1753914869235',
-      reportUrl: 'https://pub-5e90a2f5e8c44905a47c1b15177024fe.r2.dev/public/technical-report/thrustMIT-info%20-%20Google%20Sheets_compressed.pdf',
       details: {
         maxAltitude: '11,662 ft',
         duration: '2021-22',
@@ -97,7 +96,6 @@ const ProjectDetail = ({ Header, Footer, projectId, onNavigateHome, onNavigateTo
       category: '10K COTS', 
       description: "Phoenix was thrustMIT's 3rd rocket and official entry to the 2021 Spaceport America Cup. With a carbon fibre airframe and glass fibre Avionics Bay, the rocket featured a functional payload experiment aiming to accurately measure and log vibrations experienced by a CanSat during flight using a piezoelectric transducer. Project Phoenix achieved 7th position in the 10K COTS category and 16th position overall.",
       image: 'https://ik.imagekit.io/wns4q4r9n2/Projects/Renders/phoenix_8Nh7jG9bA_8isaJXVLu.png?updatedAt=1753914869369',
-      reportUrl: 'https://pub-5e90a2f5e8c44905a47c1b15177024fe.r2.dev/public/technical-report/thrustMIT-info%20-%20Google%20Sheets_compressed.pdf',
       details: {
         maxAltitude: '10,000 ft',
         duration: '2020-21',
@@ -119,7 +117,6 @@ const ProjectDetail = ({ Header, Footer, projectId, onNavigateHome, onNavigateTo
       category: 'Sounding Rocket', 
       description: "Arya, launched at the 2019 Spaceport America Cup, was our 2nd rocket made entirely out of carbon fibre with a target apogee of 3 km. It featured Aluminium 6061-T6 bulkheads and centering rings. The team successfully launched Lapwing II, a subscale rocket used to test recovery systems. Project Arya featured an in-house reefing mechanism to optimize recovery operations.",
       image: 'https://ik.imagekit.io/wns4q4r9n2/Projects/Renders/arya_K-kwONsP_.png?updatedAt=1753914869619',
-      reportUrl: 'https://pub-5e90a2f5e8c44905a47c1b15177024fe.r2.dev/public/technical-report/thrustMIT-info%20-%20Google%20Sheets_compressed.pdf',
       details: {
         maxAltitude: '2,047 ft',
         duration: '2018-19',
