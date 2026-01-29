@@ -164,6 +164,7 @@ const ProjectDetail = ({ Header, Footer, projectId, onNavigateHome, onNavigateTo
     document.head.appendChild(link);
   }, []);
 
+  // Find the project based on projectId
   const project = projects.find(p => p.id === projectId);
 
   // compute index and prev/next ids
@@ -183,6 +184,10 @@ const ProjectDetail = ({ Header, Footer, projectId, onNavigateHome, onNavigateTo
       window.open(project.reportUrl, '_blank', 'noopener,noreferrer');
     }
   };
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [projectId]);
 
   if (!project) {
     return (
@@ -295,8 +300,10 @@ const ProjectDetail = ({ Header, Footer, projectId, onNavigateHome, onNavigateTo
                     {project.name}
                   </h1>
                   {project.reportUrl && (
-                    <button
-                      onClick={handleViewReport}
+                    <a
+                      href={project.reportUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
                       className="group flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600 text-white rounded-lg transition-all hover:scale-105 shadow-lg shadow-blue-500/50"
                       aria-label="View Technical Report"
                     >
@@ -304,7 +311,7 @@ const ProjectDetail = ({ Header, Footer, projectId, onNavigateHome, onNavigateTo
                       <span className="text-sm font-semibold whitespace-nowrap" style={{ fontFamily: 'Rajdhani, sans-serif' }}>
                         Technical Report
                       </span>
-                    </button>
+                    </a>
                   )}
                 </div>
                 <p className="text-lg md:text-xl text-gray-300 leading-relaxed" style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 400, letterSpacing: '0.03em' }}>
