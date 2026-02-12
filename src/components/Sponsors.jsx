@@ -27,7 +27,7 @@ const Sponsors = () => {
       angle: 180,
     },
     {
-      name: "EasyEDA",
+      name: "easyEDA",
       logo: "https://pub-5e90a2f5e8c44905a47c1b15177024fe.r2.dev/public/sponsors/easyEDA.png",
       description: "EasyEDA is a web-based EDA tool that allows users to design, simulate, and share electronic circuits and PCBs. It offers an intuitive interface for schematic capture, PCB layout, and circuit simulation, making it accessible for both beginners and professionals in electronics design.",
       angle: 240,
@@ -131,7 +131,7 @@ const Sponsors = () => {
                         className={`w-auto object-contain transition-all duration-500 ${
                           sponsor.name === "MAHE" ? "h-14 md:h-28" : 
                           sponsor.name === "SolidWorks" ? "h-5 md:h-12" :
-                          sponsor.name === "easyEDA" || sponsor.name === "JCLPCB" ? "h-8 md:h-20" :
+                          sponsor.name === "easyEDA" || sponsor.name === "JCLPCB" ? "h-10 md:h-24" :
                           "h-6 md:h-16"
                         } ${
                           isActive ? "brightness-125" : "brightness-90 hover:brightness-110"
