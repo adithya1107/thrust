@@ -12,20 +12,32 @@ const Sponsors = () => {
       name: "Ansys",
       logo: "https://pub-5e90a2f5e8c44905a47c1b15177024fe.r2.dev/public/sponsors/ansys.png",
       description: "Ansys provides engineering simulation software for product design and testing. Used across aerospace, automotive, and electronics industries for structural, fluid, electromagnetic, and systems simulation.",
-      angle: 90,
+      angle: 60,
     },
     {
       name: "SolidWorks",
       logo: "https://pub-5e90a2f5e8c44905a47c1b15177024fe.r2.dev/public/sponsors/solidworks.png",
       description: "SOLIDWORKS is a software used for creating 3D models and simulations, primarily for product development and engineering applications. It's a powerful tool used in industries like automotive, aerospace, and manufacturing, offering features for design, analysis, and manufacturing.",
-      angle: 180,
+      angle: 120,
     },
     {
       name: "Altium",
       logo: "https://pub-5e90a2f5e8c44905a47c1b15177024fe.r2.dev/public/sponsors/altium.png",
       description: "Altium is the world's leading PCB design software that combines schematic, layout, and everything else needed in one environment to effortlessly design printed circuit boards. Used across industries from aerospace and defense to automotive and consumer electronics, Altium empowers designers to develop electronics products faster and more efficiently than ever before.",
-      angle: 270,
+      angle: 180,
     },
+    {
+      name: "EasyEDA",
+      logo: "https://pub-5e90a2f5e8c44905a47c1b15177024fe.r2.dev/public/sponsors/easyEDA.png",
+      description: "EasyEDA is a web-based EDA tool that allows users to design, simulate, and share electronic circuits and PCBs. It offers an intuitive interface for schematic capture, PCB layout, and circuit simulation, making it accessible for both beginners and professionals in electronics design.",
+      angle: 240,
+    },
+    {
+      name: "JCLPCB",
+      logo: "https://pub-5e90a2f5e8c44905a47c1b15177024fe.r2.dev/public/sponsors/JCL.png",
+      description: "JCLPCB is a leading PCB manufacturer that provides high-quality printed circuit board fabrication and assembly services. With advanced manufacturing capabilities and a commitment to quality, JCLPCB serves customers worldwide, offering fast turnaround times and competitive pricing for PCB production.",
+      angle: 300,
+    }
   ];
 
   const [activeIndex, setActiveIndex] = useState(0);
@@ -117,7 +129,10 @@ const Sponsors = () => {
                         src={sponsor.logo} 
                         alt={sponsor.name}
                         className={`w-auto object-contain transition-all duration-500 ${
-                          sponsor.name === "MAHE" ? "h-14 md:h-28" : "h-6 md:h-16"
+                          sponsor.name === "MAHE" ? "h-14 md:h-28" : 
+                          sponsor.name === "SolidWorks" ? "h-5 md:h-12" :
+                          sponsor.name === "easyEDA" || sponsor.name === "JCLPCB" ? "h-8 md:h-20" :
+                          "h-6 md:h-16"
                         } ${
                           isActive ? "brightness-125" : "brightness-90 hover:brightness-110"
                         }`}

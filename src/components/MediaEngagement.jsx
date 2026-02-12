@@ -117,7 +117,7 @@ const MediaCard = ({ item, index }) => {
                   {item.subtitle}
                 </p>
                 
-                <div className="flex gap-1 mt-3">
+                {/* <div className="flex gap-1 mt-3">
                   {[...Array(30)].map((_, i) => (
                     <div 
                       key={i} 
@@ -128,7 +128,7 @@ const MediaCard = ({ item, index }) => {
                       }}
                     />
                   ))}
-                </div>
+                </div> */}
               </div>
             </div>
           </div>
@@ -182,7 +182,7 @@ const MediaCard = ({ item, index }) => {
                 {item.subtitle}
               </p>
               
-              <div className="flex gap-1 mt-3">
+              {/* <div className="flex gap-1 mt-3">
                 {[...Array(30)].map((_, i) => (
                   <div 
                     key={i} 
@@ -193,7 +193,7 @@ const MediaCard = ({ item, index }) => {
                     }}
                   />
                 ))}
-              </div>
+              </div> */}
             </div>
           </div>
 
