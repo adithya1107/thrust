@@ -5,11 +5,15 @@
 /* Prevent horizontal overflow without breaking scroll */
 * {
   box-sizing: border-box;
+  cursor: none;
 }
 
 html {
   overflow-x: clip;
   width: 100%;
+}
+header, header * {
+  cursor: auto !important;
 }
 
 body {

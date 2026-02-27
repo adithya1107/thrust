@@ -21,6 +21,7 @@ import WikiCard from './components/WikiCard';
 import ProjectDetail from './components/ProjectDetail';
 import Blog from './components/Blog';
 import RecruitmentModal from './components/RecruitmentModal';
+import CustomCursor from './components/CustomCursor';
 
 export default function App() {
   const [currentPage, setCurrentPage] = useState('home');
@@ -32,7 +33,6 @@ export default function App() {
 
   // Initialize AOS and prevent overscroll bounce effect
   useEffect(() => {
-    // Initialize AOS
     AOS.init({
       duration: 1000,
       once: true,
@@ -40,7 +40,6 @@ export default function App() {
       easing: 'ease-out-cubic'
     });
     
-    // Prevent bounce/rubber-band scrolling on the entire page
     document.body.style.overscrollBehavior = 'none';
     document.documentElement.style.overscrollBehavior = 'none';
     
@@ -85,7 +84,6 @@ export default function App() {
   // Scroll to section after page loads
   useEffect(() => {
     if (currentPage === 'home' && pendingSection) {
-      // Small delay to ensure DOM is ready
       setTimeout(() => {
         scrollToSection(pendingSection);
         setPendingSection(null);
@@ -136,13 +134,11 @@ export default function App() {
 
   // Handle section scrolling on home page
   const scrollToSection = (sectionId) => {
-    // Clear any hash from URL
     window.history.replaceState({}, '', '/');
     
-    // Scroll to section
     const element = document.getElementById(sectionId);
     if (element) {
-      const offset = 80; // Header height
+      const offset = 80;
       const elementPosition = element.getBoundingClientRect().top;
       const offsetPosition = elementPosition + window.pageYOffset - offset;
 
@@ -176,7 +172,6 @@ export default function App() {
     setRecruitmentModalOpen(false);
   };
 
-  // expose modal opener to header and child pages
   commonHeaderProps.onShowRecruitmentModal = openRecruitmentModal;
 
   const renderRecruitmentModal = () => (
@@ -187,6 +182,7 @@ export default function App() {
   if (currentPage === 'project-detail') {
     return (
       <>
+        <CustomCursor />
         <ProjectDetail 
           Header={Header}
           Footer={Footer}
@@ -203,19 +199,23 @@ export default function App() {
 
   if (currentPage === 'rocket-wiki') {
     return (
-      <RocketWiki 
-        Header={Header}
-        Footer={Footer}
-        onNavigateHome={() => navigate('home')}
-        onNavigateToAlumni={(year) => navigate('alumni', year)}
-        headerProps={commonHeaderProps}
-      />
+      <>
+        <CustomCursor />
+        <RocketWiki 
+          Header={Header}
+          Footer={Footer}
+          onNavigateHome={() => navigate('home')}
+          onNavigateToAlumni={(year) => navigate('alumni', year)}
+          headerProps={commonHeaderProps}
+        />
+      </>
     );
   }
 
   if (currentPage === 'team') {
     return (
       <>
+        <CustomCursor />
         <Team 
           Header={Header}
           Footer={Footer}
@@ -231,6 +231,7 @@ export default function App() {
   if (currentPage === 'alumni') {
     return (
       <>
+        <CustomCursor />
         <Alumni 
           Header={Header}
           Footer={Footer}
@@ -247,6 +248,7 @@ export default function App() {
   if (currentPage === 'join') {
     return (
       <>
+        <CustomCursor />
         <JoinTeam 
           Header={Header}
           Footer={Footer}
@@ -261,6 +263,7 @@ export default function App() {
   if (currentPage === 'blog') {
     return (
       <>
+        <CustomCursor />
         <Blog 
           Header={Header}
           Footer={Footer}
@@ -275,6 +278,7 @@ export default function App() {
   if (currentPage === 'gallery') {
     return (
       <>
+        <CustomCursor />
         <GalleryPage
           Header={Header}
           Footer={Footer}
@@ -288,6 +292,7 @@ export default function App() {
 
   return (
     <div className="bg-black text-white min-h-screen w-full relative" style={{ overflowX: 'clip' }}>
+      <CustomCursor />
       <Header 
         {...commonHeaderProps}
         onScrollToSection={scrollToSection}

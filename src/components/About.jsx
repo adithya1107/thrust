@@ -86,10 +86,10 @@ const About = () => {
             <div className="absolute -bottom-4 -left-4 w-32 h-32 bg-blue-600/10 rounded-full blur-2xl" />
           </div>
         </div>
+      <MediaEngagement />
       </div>
       </section>
 
-      <MediaEngagement />
     </>
   );
 };
