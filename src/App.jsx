@@ -12,8 +12,8 @@ import GalleryPage from './components/GalleryPage';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
 import SponsorshipTiers from './components/SponsorshipTiers';
-import RocketWiki from './components/RocketWiki'; 
-// import ComingSoon from './components/ComingSoon'; 
+// import RocketWiki from './components/RocketWiki'; 
+import ComingSoon from './components/ComingSoon'; 
 import JoinTeam from './components/JoinTeam';
 import Team from './components/Team';
 import Alumni from './components/Alumni';
@@ -21,7 +21,6 @@ import WikiCard from './components/WikiCard';
 import ProjectDetail from './components/ProjectDetail';
 import Blog from './components/Blog';
 import RecruitmentModal from './components/RecruitmentModal';
-import CustomCursor from './components/CustomCursor';
 
 export default function App() {
   const [currentPage, setCurrentPage] = useState('home');
@@ -33,6 +32,7 @@ export default function App() {
 
   // Initialize AOS and prevent overscroll bounce effect
   useEffect(() => {
+    // Initialize AOS
     AOS.init({
       duration: 1000,
       once: true,
@@ -40,6 +40,7 @@ export default function App() {
       easing: 'ease-out-cubic'
     });
     
+    // Prevent bounce/rubber-band scrolling on the entire page
     document.body.style.overscrollBehavior = 'none';
     document.documentElement.style.overscrollBehavior = 'none';
     
@@ -84,6 +85,7 @@ export default function App() {
   // Scroll to section after page loads
   useEffect(() => {
     if (currentPage === 'home' && pendingSection) {
+      // Small delay to ensure DOM is ready
       setTimeout(() => {
         scrollToSection(pendingSection);
         setPendingSection(null);
@@ -134,11 +136,13 @@ export default function App() {
 
   // Handle section scrolling on home page
   const scrollToSection = (sectionId) => {
+    // Clear any hash from URL
     window.history.replaceState({}, '', '/');
     
+    // Scroll to section
     const element = document.getElementById(sectionId);
     if (element) {
-      const offset = 80;
+      const offset = 80; // Header height
       const elementPosition = element.getBoundingClientRect().top;
       const offsetPosition = elementPosition + window.pageYOffset - offset;
 
@@ -172,6 +176,7 @@ export default function App() {
     setRecruitmentModalOpen(false);
   };
 
+  // expose modal opener to header and child pages
   commonHeaderProps.onShowRecruitmentModal = openRecruitmentModal;
 
   const renderRecruitmentModal = () => (
@@ -182,12 +187,14 @@ export default function App() {
   if (currentPage === 'project-detail') {
     return (
       <>
-        <CustomCursor />
         <ProjectDetail 
           Header={Header}
           Footer={Footer}
           projectId={selectedProjectId}
-          onNavigateHome={() => navigate('home')}
+          onNavigateHome={navigateHome}
+          onScrollToSection={scrollToSection}
+          onNavigateToRocketWiki={() => navigate('rocket-wiki')}
+          onNavigateToBlog={() => navigate('blog')}
           onNavigateToProjects={() => navigateHome('projects')}
           onNavigateToProject={(projectId) => navigate('project-detail', projectId)}
           headerProps={commonHeaderProps}
@@ -198,28 +205,40 @@ export default function App() {
   }
 
   if (currentPage === 'rocket-wiki') {
+    // COMING SOON PAGE (Currently Active)
+    // To switch back to the full Rocket Wiki, comment out the ComingSoon block below
+    // and uncomment the RocketWiki block
     return (
-      <>
-        <CustomCursor />
-        <RocketWiki 
-          Header={Header}
-          Footer={Footer}
-          onNavigateHome={() => navigate('home')}
-          onNavigateToAlumni={(year) => navigate('alumni', year)}
-          headerProps={commonHeaderProps}
-        />
-      </>
+      <ComingSoon 
+        Header={Header}
+        onNavigateHome={() => navigate('home')}
+        headerProps={commonHeaderProps}
+      />
     );
+
+    // FULL ROCKET WIKI PAGE (Commented Out)
+    // Uncomment this block when ready to show the full wiki
+    /* return (
+      <RocketWiki 
+        Header={Header}
+        Footer={Footer}
+        onNavigateHome={() => navigate('home')}
+        onNavigateToAlumni={(year) => navigate('alumni', year)}
+        headerProps={commonHeaderProps}
+      />
+    ); */
   }
 
   if (currentPage === 'team') {
     return (
       <>
-        <CustomCursor />
         <Team 
           Header={Header}
           Footer={Footer}
-          onNavigateHome={() => navigate('home')}
+          onNavigateHome={navigateHome}
+          onScrollToSection={scrollToSection}
+          onNavigateToRocketWiki={() => navigate('rocket-wiki')}
+          onNavigateToBlog={() => navigate('blog')}
           onNavigateToJoinTeam={() => navigate('join')} 
           headerProps={commonHeaderProps}
         />
@@ -231,12 +250,14 @@ export default function App() {
   if (currentPage === 'alumni') {
     return (
       <>
-        <CustomCursor />
         <Alumni 
           Header={Header}
           Footer={Footer}
           initialYear={selectedAlumniYear} 
-          onNavigateHome={() => navigate('home')}
+          onNavigateHome={navigateHome}
+          onScrollToSection={scrollToSection}
+          onNavigateToRocketWiki={() => navigate('rocket-wiki')}
+          onNavigateToBlog={() => navigate('blog')}
           onNavigateToAlumni={(year) => navigate('alumni', year)}
           headerProps={commonHeaderProps}
         />
@@ -248,7 +269,6 @@ export default function App() {
   if (currentPage === 'join') {
     return (
       <>
-        <CustomCursor />
         <JoinTeam 
           Header={Header}
           Footer={Footer}
@@ -263,7 +283,6 @@ export default function App() {
   if (currentPage === 'blog') {
     return (
       <>
-        <CustomCursor />
         <Blog 
           Header={Header}
           Footer={Footer}
@@ -278,11 +297,13 @@ export default function App() {
   if (currentPage === 'gallery') {
     return (
       <>
-        <CustomCursor />
         <GalleryPage
           Header={Header}
           Footer={Footer}
-          onNavigateHome={() => navigate('home')}
+          onNavigateHome={navigateHome}
+          onScrollToSection={scrollToSection}
+          onNavigateToRocketWiki={() => navigate('rocket-wiki')}
+          onNavigateToBlog={() => navigate('blog')}
           headerProps={commonHeaderProps}
         />
         {renderRecruitmentModal()}
@@ -292,7 +313,6 @@ export default function App() {
 
   return (
     <div className="bg-black text-white min-h-screen w-full relative" style={{ overflowX: 'clip' }}>
-      <CustomCursor />
       <Header 
         {...commonHeaderProps}
         onScrollToSection={scrollToSection}

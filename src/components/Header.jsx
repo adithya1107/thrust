@@ -101,10 +101,10 @@ const Header = ({
     }
   };
 
-  return (
+    return (
     <header className={`fixed top-0 left-0 right-0 w-full z-50 transition-all duration-500 ${
       showSolid 
-        ? 'bg-black/95 backdrop-blur-xl border-b border-blue-600/20 shadow-lg shadow-blue-600/5' 
+        ? 'bg-black/95 backdrop-blur-xl shadow-lg shadow-blue-600/5' 
         : 'bg-gradient-to-b from-black via-black/90 to-transparent backdrop-blur-md'
     }`}>
       <div className="px-3 sm:px-4 md:px-6 lg:px-8 py-3 sm:py-4 flex items-center justify-center">

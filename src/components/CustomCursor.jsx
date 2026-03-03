@@ -23,6 +23,7 @@ export default function CustomCursor() {
   const mouseRef = useRef({ x: -300, y: -300 });
   const prevMouseRef = useRef({ x: -300, y: -300 });
   const angleRef = useRef(0);
+  const smoothAngleRef = useRef(0);
   const trailRef = useRef({ x: -300, y: -300 });
   const isHoveringRef = useRef(false);
   const isOverHeaderRef = useRef(false);
@@ -30,104 +31,173 @@ export default function CustomCursor() {
   const frameRef = useRef(0);
   const [isVisible, setIsVisible] = useState(false);
 
+  // Falcon-inspired rocket — slender, cylindrical, minimal fins
   const drawRocket = useCallback((ctx, x, y, angleDeg, hovering) => {
     ctx.save();
     ctx.translate(x, y);
     ctx.rotate((angleDeg * Math.PI) / 180);
-    const s = hovering ? 1.3 : 1.0;
+    const s = hovering ? 1.18 : 1.0;
     ctx.scale(s, s);
 
-    // Outer ambient glow
-    const glow = ctx.createRadialGradient(0, 0, 1, 0, 0, 20);
-    glow.addColorStop(0, 'rgba(147,197,253,0.22)');
-    glow.addColorStop(1, 'rgba(37,99,235,0)');
+    // ── Subtle ambient halo ──────────────────────────────────────
+    const halo = ctx.createRadialGradient(0, 0, 2, 0, 0, 18);
+    halo.addColorStop(0, 'rgba(200,220,255,0.09)');
+    halo.addColorStop(1, 'rgba(100,160,255,0)');
     ctx.beginPath();
-    ctx.arc(0, 0, 20, 0, Math.PI * 2);
-    ctx.fillStyle = glow;
+    ctx.arc(0, 0, 18, 0, Math.PI * 2);
+    ctx.fillStyle = halo;
     ctx.fill();
 
-    // Left fin
-    ctx.beginPath();
-    ctx.moveTo(-4, 4);
-    ctx.lineTo(-11, 13);
-    ctx.lineTo(-3, 8);
-    ctx.closePath();
-    const finGradL = ctx.createLinearGradient(-11, 4, -3, 13);
-    finGradL.addColorStop(0, '#1e40af');
-    finGradL.addColorStop(1, '#1d4ed8');
-    ctx.fillStyle = finGradL;
-    ctx.fill();
+    // ── Grid fins (4 small rectangles near base, rotated 45°) ────
+    // These sit outside the body, symmetrically
+    const finPositions = [[-5.5, 7], [5.5, 7]];
+    for (const [fx, fy] of finPositions) {
+      ctx.save();
+      ctx.translate(fx, fy);
+      // Trapezoidal fin shape
+      ctx.beginPath();
+      ctx.moveTo(fx < 0 ? 0 : 0, -3);
+      ctx.lineTo(fx < 0 ? -5 : 5, -1);
+      ctx.lineTo(fx < 0 ? -4 : 4, 4);
+      ctx.lineTo(fx < 0 ? 0.5 : -0.5, 3.5);
+      ctx.closePath();
+      const finG = ctx.createLinearGradient(fx < 0 ? -5 : 0, -3, fx < 0 ? 0 : 5, 4);
+      finG.addColorStop(0, '#1c2b45');
+      finG.addColorStop(1, '#2e4470');
+      ctx.fillStyle = finG;
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(160,190,240,0.18)';
+      ctx.lineWidth = 0.5;
+      ctx.stroke();
+      ctx.restore();
+    }
 
-    // Right fin
+    // ── Engine nozzle bell ───────────────────────────────────────
     ctx.beginPath();
-    ctx.moveTo(4, 4);
-    ctx.lineTo(11, 13);
-    ctx.lineTo(3, 8);
+    ctx.moveTo(-3.2, 9.5);
+    ctx.lineTo(3.2, 9.5);
+    ctx.bezierCurveTo(4.5, 9.5, 4.8, 13, 3.8, 14.5);
+    ctx.lineTo(-3.8, 14.5);
+    ctx.bezierCurveTo(-4.8, 13, -4.5, 9.5, -3.2, 9.5);
     ctx.closePath();
-    const finGradR = ctx.createLinearGradient(3, 4, 11, 13);
-    finGradR.addColorStop(0, '#1e40af');
-    finGradR.addColorStop(1, '#1d4ed8');
-    ctx.fillStyle = finGradR;
+    const nozzleG = ctx.createLinearGradient(-4, 9.5, 4, 14.5);
+    nozzleG.addColorStop(0, '#0d1520');
+    nozzleG.addColorStop(0.5, '#1a2840');
+    nozzleG.addColorStop(1, '#0d1520');
+    ctx.fillStyle = nozzleG;
     ctx.fill();
-
-    // Engine bell
-    ctx.beginPath();
-    ctx.moveTo(-3.5, 9);
-    ctx.lineTo(3.5, 9);
-    ctx.lineTo(3, 14);
-    ctx.lineTo(-3, 14);
-    ctx.closePath();
-    ctx.fillStyle = '#0f172a';
-    ctx.fill();
-    ctx.strokeStyle = 'rgba(96,165,250,0.4)';
-    ctx.lineWidth = 0.6;
+    ctx.strokeStyle = 'rgba(120,160,220,0.25)';
+    ctx.lineWidth = 0.5;
     ctx.stroke();
 
-    // Main body
+    // Nozzle inner throat glow
     ctx.beginPath();
-    ctx.moveTo(0, -16);
-    ctx.bezierCurveTo(6, -8, 7, 0, 6, 9);
-    ctx.lineTo(0, 11);
-    ctx.lineTo(-6, 9);
-    ctx.bezierCurveTo(-7, 0, -6, -8, 0, -16);
+    ctx.ellipse(0, 14, 2, 0.9, 0, 0, Math.PI * 2);
+    const throatG = ctx.createRadialGradient(0, 14, 0, 0, 14, 2);
+    throatG.addColorStop(0, hovering ? 'rgba(180,220,255,0.95)' : 'rgba(140,190,255,0.7)');
+    throatG.addColorStop(1, 'rgba(40,80,180,0)');
+    ctx.fillStyle = throatG;
+    ctx.fill();
+
+    // ── Inter-stage ring (thin band) ─────────────────────────────
+    ctx.beginPath();
+    ctx.roundRect(-5.2, 4.5, 10.4, 2.2, 0.4);
+    const ringG = ctx.createLinearGradient(-5, 4.5, 5, 6.7);
+    ringG.addColorStop(0, '#0f1e35');
+    ringG.addColorStop(0.4, '#1e3560');
+    ringG.addColorStop(1, '#0f1e35');
+    ctx.fillStyle = ringG;
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(140,180,240,0.3)';
+    ctx.lineWidth = 0.5;
+    ctx.stroke();
+
+    // ── Main cylindrical body (first stage) ──────────────────────
+    ctx.beginPath();
+    ctx.moveTo(-5.2, 4.5);
+    ctx.lineTo(-5.2, 9.5);
+    ctx.lineTo(5.2, 9.5);
+    ctx.lineTo(5.2, 4.5);
     ctx.closePath();
-    const body = ctx.createLinearGradient(-7, -16, 7, 11);
-    body.addColorStop(0, '#dbeafe');
-    body.addColorStop(0.35, '#93c5fd');
-    body.addColorStop(0.72, '#2563eb');
-    body.addColorStop(1, '#1e3a8a');
-    ctx.fillStyle = body;
+    const stage1G = ctx.createLinearGradient(-5.2, 0, 5.2, 0);
+    stage1G.addColorStop(0, '#0e1a2e');
+    stage1G.addColorStop(0.18, '#1e3255');
+    stage1G.addColorStop(0.5, '#2a4878');
+    stage1G.addColorStop(0.82, '#1e3255');
+    stage1G.addColorStop(1, '#0e1a2e');
+    ctx.fillStyle = stage1G;
     ctx.fill();
-    ctx.strokeStyle = 'rgba(191,219,254,0.35)';
-    ctx.lineWidth = 0.7;
+
+    // ── Second stage + payload fairing body ──────────────────────
+    ctx.beginPath();
+    ctx.moveTo(-4.5, -10);
+    ctx.lineTo(-5.2, 4.5);
+    ctx.lineTo(5.2, 4.5);
+    ctx.lineTo(4.5, -10);
+    ctx.closePath();
+    const stage2G = ctx.createLinearGradient(-5.2, -10, 5.2, 4.5);
+    stage2G.addColorStop(0, '#c8d8ee');
+    stage2G.addColorStop(0.25, '#8aaad0');
+    stage2G.addColorStop(0.6, '#2a4878');
+    stage2G.addColorStop(1, '#1a3060');
+    ctx.fillStyle = stage2G;
+    ctx.fill();
+
+    // Side panel lines on second stage — subtle vertical seams
+    for (const px of [-1.8, 0, 1.8]) {
+      ctx.beginPath();
+      ctx.moveTo(px, -8.5);
+      ctx.lineTo(px * 1.05, 4.5);
+      ctx.strokeStyle = 'rgba(255,255,255,0.06)';
+      ctx.lineWidth = 0.5;
+      ctx.stroke();
+    }
+
+    // ── Ogive nosecone ───────────────────────────────────────────
+    ctx.beginPath();
+    ctx.moveTo(0, -20);
+    ctx.bezierCurveTo(3.5, -15, 4.5, -13, 4.5, -10);
+    ctx.lineTo(-4.5, -10);
+    ctx.bezierCurveTo(-4.5, -13, -3.5, -15, 0, -20);
+    ctx.closePath();
+    const noseG = ctx.createLinearGradient(-4.5, -20, 4.5, -10);
+    noseG.addColorStop(0, '#ffffff');
+    noseG.addColorStop(0.3, '#d8e8f8');
+    noseG.addColorStop(0.7, '#8aaad0');
+    noseG.addColorStop(1, '#4a70a8');
+    ctx.fillStyle = noseG;
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(200,220,255,0.2)';
+    ctx.lineWidth = 0.4;
     ctx.stroke();
 
-    // Sheen highlight
+    // Nosecone left highlight
     ctx.beginPath();
-    ctx.moveTo(-0.5, -15);
-    ctx.bezierCurveTo(-3.5, -8, -4, -1, -3, 7);
-    ctx.lineWidth = 1.2;
-    ctx.strokeStyle = 'rgba(255,255,255,0.45)';
-    ctx.stroke();
-
-    // Porthole
-    ctx.beginPath();
-    ctx.arc(0, -2, 3.4, 0, Math.PI * 2);
-    const pGrad = ctx.createRadialGradient(-0.8, -2.8, 0.2, 0, -2, 3.4);
-    pGrad.addColorStop(0, hovering ? '#e0f2fe' : '#bfdbfe');
-    pGrad.addColorStop(0.6, hovering ? '#7dd3fc' : '#60a5fa');
-    pGrad.addColorStop(1, '#1d4ed8');
-    ctx.fillStyle = pGrad;
-    ctx.fill();
-    ctx.strokeStyle = 'rgba(255,255,255,0.55)';
+    ctx.moveTo(0, -19.5);
+    ctx.bezierCurveTo(-1.5, -15, -2.5, -12, -2.8, -10);
+    ctx.strokeStyle = 'rgba(255,255,255,0.5)';
     ctx.lineWidth = 0.8;
     ctx.stroke();
 
-    // Nose tip
+    // ── Antenna / payload marker — tiny stub at tip ──────────────
     ctx.beginPath();
-    ctx.arc(0, -15.5, 1.4, 0, Math.PI * 2);
-    ctx.fillStyle = '#ffffff';
+    ctx.moveTo(0, -20);
+    ctx.lineTo(0, -23);
+    ctx.strokeStyle = 'rgba(200,220,255,0.6)';
+    ctx.lineWidth = 0.7;
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.arc(0, -23, 1, 0, Math.PI * 2);
+    ctx.fillStyle = hovering ? 'rgba(180,220,255,0.9)' : 'rgba(150,200,255,0.7)';
     ctx.fill();
+
+    // ── Body left highlight streak ───────────────────────────────
+    ctx.beginPath();
+    ctx.moveTo(-1.2, -18);
+    ctx.bezierCurveTo(-2.8, -8, -3.5, 0, -3.2, 8);
+    ctx.strokeStyle = 'rgba(255,255,255,0.2)';
+    ctx.lineWidth = 1.0;
+    ctx.stroke();
 
     ctx.restore();
   }, []);
@@ -173,13 +243,18 @@ export default function CustomCursor() {
     const onMouseMove = (e) => {
       const dx = e.clientX - prevMouseRef.current.x;
       const dy = e.clientY - prevMouseRef.current.y;
-      if (Math.abs(dx) > 0.4 || Math.abs(dy) > 0.4) {
-        angleRef.current = Math.atan2(dy, dx) * (180 / Math.PI) + 90;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      if (dist > 0.4) {
+        const rawAngle = Math.atan2(dy, dx) * (180 / Math.PI) + 90;
+        let diff = rawAngle - smoothAngleRef.current;
+        while (diff > 180) diff -= 360;
+        while (diff < -180) diff += 360;
+        smoothAngleRef.current += diff * 0.22;
+        angleRef.current = smoothAngleRef.current;
       }
       prevMouseRef.current = { x: mouseRef.current.x, y: mouseRef.current.y };
       mouseRef.current = { x: e.clientX, y: e.clientY };
 
-      // Check if over header
       const el = document.elementFromPoint(e.clientX, e.clientY);
       isOverHeaderRef.current = !!(el && el.closest('header'));
       setIsVisible(!isOverHeaderRef.current);
@@ -187,7 +262,6 @@ export default function CustomCursor() {
 
     const onMouseOver = (e) => {
       const el = e.target;
-      // Don't set hovering state inside header
       if (el.closest('header')) {
         isHoveringRef.current = false;
         return;
@@ -218,7 +292,6 @@ export default function CustomCursor() {
       trailRef.current.x += (mx - trailRef.current.x) * 0.09;
       trailRef.current.y += (my - trailRef.current.y) * 0.09;
 
-      // Only spawn particles when NOT over header
       if (!isOverHeaderRef.current && frameRef.current % 2 === 0) {
         const count = hovering ? 4 : 2;
         for (let i = 0; i < count; i++) {
@@ -230,7 +303,6 @@ export default function CustomCursor() {
         particlesRef.current = particlesRef.current.slice(-140);
       }
 
-      // Always update/draw existing particles so trail fades out naturally
       particlesRef.current = particlesRef.current.filter((p) => p.life > 0.015);
       for (const p of particlesRef.current) {
         p.x += p.vx;
@@ -241,7 +313,6 @@ export default function CustomCursor() {
         drawParticle(ctx, p);
       }
 
-      // Only draw rocket & reticle when NOT over header
       if (!isOverHeaderRef.current) {
         if (hovering) {
           const tx = trailRef.current.x;
@@ -249,6 +320,7 @@ export default function CustomCursor() {
           const pulse = 0.45 + 0.25 * Math.sin(frameRef.current * 0.07);
 
           ctx.save();
+          // Outer dashed orbit ring
           ctx.beginPath();
           ctx.arc(tx, ty, 26, 0, Math.PI * 2);
           ctx.strokeStyle = `rgba(96,165,250,${pulse})`;
@@ -257,6 +329,7 @@ export default function CustomCursor() {
           ctx.lineDashOffset = -(frameRef.current * 0.5);
           ctx.stroke();
 
+          // Inner solid ring
           ctx.beginPath();
           ctx.arc(tx, ty, 18, 0, Math.PI * 2);
           ctx.strokeStyle = `rgba(147,197,253,${pulse * 0.7})`;
@@ -264,6 +337,7 @@ export default function CustomCursor() {
           ctx.setLineDash([]);
           ctx.stroke();
 
+          // Cardinal tick marks
           ctx.strokeStyle = `rgba(147,197,253,${pulse * 0.5})`;
           ctx.lineWidth = 0.7;
           const len = 8;
