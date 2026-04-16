@@ -7,37 +7,55 @@ const Sponsors = () => {
       logo: "https://pub-5e90a2f5e8c44905a47c1b15177024fe.r2.dev/public/sponsors/mahe.png",
       description: "Manipal Academy of Higher Education (MAHE) is a prestigious private university in India, renowned for its excellence in education, research, and innovation across diverse fields including engineering, medicine, and management. MAHE fosters a vibrant academic environment that nurtures talent and drives impactful advancements.",
       angle: 0,
+      website: "https://manipal.edu",
     },
     {
       name: "Ansys",
       logo: "https://pub-5e90a2f5e8c44905a47c1b15177024fe.r2.dev/public/sponsors/ansys.png",
       description: "Ansys provides engineering simulation software for product design and testing. Used across aerospace, automotive, and electronics industries for structural, fluid, electromagnetic, and systems simulation.",
-      angle: 72,
+      angle: 51.4,
+      website: "https://www.ansys.com",
     },
     {
       name: "Altium",
       logo: "https://pub-5e90a2f5e8c44905a47c1b15177024fe.r2.dev/public/sponsors/altium.png",
       description: "Altium is the world's leading PCB design software that combines schematic, layout, and everything else needed in one environment to effortlessly design printed circuit boards. Used across industries from aerospace and defense to automotive and consumer electronics, Altium empowers designers to develop electronics products faster and more efficiently than ever before.",
-      angle: 144,
+      angle: 102.8,
+      website: "https://www.altium.com",
     },
     {
       name: "easyEDA",
       logo: "https://pub-5e90a2f5e8c44905a47c1b15177024fe.r2.dev/public/sponsors/easyEDA.png",
       description: "EasyEDA is a web-based EDA tool that allows users to design, simulate, and share electronic circuits and PCBs. It offers an intuitive interface for schematic capture, PCB layout, and circuit simulation, making it accessible for both beginners and professionals in electronics design.",
-      angle: 216,
+      angle: 154.2,
+      website: "https://easyeda.com",
     },
     {
       name: "JCLPCB",
       logo: "https://pub-5e90a2f5e8c44905a47c1b15177024fe.r2.dev/public/sponsors/JCL.png",
       description: "JCLPCB is a leading PCB manufacturer that provides high-quality printed circuit board fabrication and assembly services. With advanced manufacturing capabilities and a commitment to quality, JCLPCB serves customers worldwide, offering fast turnaround times and competitive pricing for PCB production.",
-      angle: 288,
+      angle: 205.6,
+      website: "https://jlcpcb.com",
+    },
+    {
+      name: "Funique Composites",
+      logo: "https://pub-5e90a2f5e8c44905a47c1b15177024fe.r2.dev/public/sponsors/Funique-Logo.png",
+      description: "Funique Composites is a leading provider of advanced composite materials and solutions for aerospace, automotive, and industrial applications. With a focus on innovation and sustainability, Funique delivers high-performance composites that enable lighter, stronger, and more efficient products across various industries.",
+      angle: 257,
+      website: "https://www.funiquecomposites.com",
+    },
+    {
+      name: "RC Engineering Works",
+      logo: null,
+      description: "RC Engineering Works is a premier provider of precision engineering services and solutions for the aerospace, defense, and industrial sectors. With a commitment to quality and innovation, RC Engineering Works delivers custom machining, fabrication, and assembly services that meet the highest standards of performance and reliability.",
+      angle: 308.4,
+      website: "https://www.rcengineeringworks.com",
     }
   ];
 
   const [activeIndex, setActiveIndex] = useState(0);
   const [hoveredIndex, setHoveredIndex] = useState(null);
 
-  // Font loading
   useEffect(() => {
     const link = document.createElement('link');
     link.href = 'https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@400;500;600&display=swap';
@@ -50,15 +68,84 @@ const Sponsors = () => {
       const interval = setInterval(() => {
         setActiveIndex((prev) => (prev + 1) % sponsors.length);
       }, 5000);
-
       return () => clearInterval(interval);
     }
   }, [hoveredIndex, sponsors.length]);
 
   const activeSponsor = sponsors[hoveredIndex !== null ? hoveredIndex : activeIndex];
-  const needleAngle = activeSponsor.angle;
   const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
   const radius = isMobile ? 140 : 340;
+
+  const handleSponsorClick = (sponsor, index) => {
+    setActiveIndex(index);
+    if (sponsor.website) {
+      window.open(sponsor.website, '_blank', 'noopener,noreferrer');
+    }
+  };
+
+  // Styled text logo for sponsors without an image
+  const TextLogo = ({ name, isActive }) => {
+    const words = name.split(' ');
+    // Split into initials block + rest
+    const initials = words.map(w => w[0]).join('');
+    const shortName = words.length > 2
+      ? words.slice(0, -1).join(' ')
+      : words[0];
+    const suffix = words[words.length - 1].toUpperCase();
+
+    return (
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: '2px',
+          padding: '4px 8px',
+        }}
+      >
+        {/* Large initials */}
+        <div
+          style={{
+            fontFamily: 'Orbitron, sans-serif',
+            fontSize: isMobile ? '18px' : '22px',
+            fontWeight: 900,
+            letterSpacing: '0.12em',
+            color: isActive ? '#60a5fa' : '#94a3b8',
+            lineHeight: 1,
+            transition: 'color 0.3s',
+          }}
+        >
+          {initials}
+        </div>
+        {/* Thin separator line */}
+        <div
+          style={{
+            width: '100%',
+            height: '1px',
+            background: isActive
+              ? 'linear-gradient(90deg, transparent, #3b82f6, transparent)'
+              : 'linear-gradient(90deg, transparent, #475569, transparent)',
+            transition: 'background 0.3s',
+          }}
+        />
+        {/* Last word as small label */}
+        <div
+          style={{
+            fontFamily: 'Rajdhani, sans-serif',
+            fontSize: isMobile ? '7px' : '8px',
+            fontWeight: 600,
+            letterSpacing: '0.18em',
+            color: isActive ? '#93c5fd' : '#64748b',
+            textTransform: 'uppercase',
+            transition: 'color 0.3s',
+          }}
+        >
+          {suffix}
+        </div>
+      </div>
+    );
+  };
 
   return (
     <section id="sponsors" className="relative min-h-screen bg-black py-20 px-4 overflow-hidden">
@@ -71,7 +158,10 @@ const Sponsors = () => {
         {/* Header */}
         <div className="text-center mb-16">
           <div className="inline-block mb-4">
-            <span className="px-4 py-2 rounded-full bg-blue-600/10 text-blue-400 text-sm font-medium border border-blue-600/20" style={{ fontFamily: 'Rajdhani, sans-serif', letterSpacing: '0.05em' }}>
+            <span
+              className="px-4 py-2 rounded-full bg-blue-600/10 text-blue-400 text-sm font-medium border border-blue-600/20"
+              style={{ fontFamily: 'Rajdhani, sans-serif', letterSpacing: '0.05em' }}
+            >
               Partnership Excellence
             </span>
           </div>
@@ -83,54 +173,48 @@ const Sponsors = () => {
           </p>
         </div>
 
-        {/* Sponsors Wheel with Center Description (desktop) or stacked list (mobile) */}
+        {/* Sponsors Wheel */}
         <div className="relative w-full max-w-6xl mx-auto mb-20">
           {!isMobile ? (
             <div className="relative w-full aspect-square max-w-4xl mx-auto">
-              {/* Sponsor logos in circle */}
               {sponsors.map((sponsor, index) => {
                 const angle = sponsor.angle;
                 const x = Math.cos((angle - 90) * (Math.PI / 180)) * radius;
                 const y = Math.sin((angle - 90) * (Math.PI / 180)) * radius;
-                const isActive = index === activeIndex;
+                const isActive = hoveredIndex !== null ? hoveredIndex === index : index === activeIndex;
 
                 return (
                   <div
                     key={sponsor.name}
                     className="absolute top-1/2 left-1/2 transition-all duration-700 z-20"
-                    style={{
-                      transform: `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))`,
-                    }}
+                    style={{ transform: `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))` }}
                   >
                     <button
-                      onClick={() => {
-                        setActiveIndex(index);
-                      }}
-                      onMouseEnter={() => {
-                        setHoveredIndex(index);
-                      }}
-                      onMouseLeave={() => {
-                        setHoveredIndex(null);
-                        setActiveIndex(index);
-                      }}
-                      className={`p-2 md:p-4 rounded-lg border transition-all duration-300 hover:scale-110 ${
-                        (hoveredIndex !== null ? hoveredIndex === index : isActive)
+                      onClick={() => handleSponsorClick(sponsor, index)}
+                      onMouseEnter={() => setHoveredIndex(index)}
+                      onMouseLeave={() => { setHoveredIndex(null); setActiveIndex(index); }}
+                      title={`Visit ${sponsor.name}`}
+                      className={`p-2 md:p-4 rounded-lg border transition-all duration-300 hover:scale-110 cursor-pointer ${
+                        isActive
                           ? "bg-blue-600/20 border-blue-400 shadow-[0_0_25px_rgba(37,99,235,0.5)] scale-110"
                           : "bg-gray-900/80 backdrop-blur-sm border-gray-700/50 hover:border-blue-400/50 hover:bg-gray-800/80"
                       }`}
                     >
-                      <img 
-                        src={sponsor.logo} 
-                        alt={sponsor.name}
-                        className={`w-auto object-contain transition-all duration-500 ${
-                          sponsor.name === "MAHE" ? "h-14 md:h-28" : 
-                          sponsor.name === "SolidWorks" ? "h-5 md:h-12" :
-                          sponsor.name === "easyEDA" || sponsor.name === "JCLPCB" ? "h-10 md:h-24" :
-                          "h-6 md:h-16"
-                        } ${
-                          isActive ? "brightness-125" : "brightness-90 hover:brightness-110"
-                        }`}
-                      />
+                      {sponsor.logo ? (
+                        <img
+                          src={sponsor.logo}
+                          alt={sponsor.name}
+                          className={`w-auto object-contain transition-all duration-500 ${
+                            sponsor.name === "MAHE" ? "h-14 md:h-28" :
+                            sponsor.name === "easyEDA" || sponsor.name === "JCLPCB" ? "h-10 md:h-24" :
+                            "h-6 md:h-16"
+                          } ${isActive ? "brightness-125" : "brightness-90 hover:brightness-110"}`}
+                        />
+                      ) : (
+                        <div className="h-6 md:h-16 flex items-center justify-center" style={{ minWidth: isMobile ? '48px' : '80px' }}>
+                          <TextLogo name={sponsor.name} isActive={isActive} />
+                        </div>
+                      )}
                     </button>
                   </div>
                 );
@@ -138,45 +222,61 @@ const Sponsors = () => {
 
               {/* Center Description Card */}
               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 w-[160px] md:w-[420px]">
-                <div
-                  className={`bg-gradient-to-br from-gray-900/95 via-black/95 to-gray-900/95 backdrop-blur-xl border border-blue-600/30 rounded-2xl md:rounded-3xl p-3 md:p-8 shadow-2xl transition-all duration-300`}
-                >
-                  {/* Icon/Logo placeholder */}
+                <div className="bg-gradient-to-br from-gray-900/95 via-black/95 to-gray-900/95 backdrop-blur-xl border border-blue-600/30 rounded-2xl md:rounded-3xl p-3 md:p-8 shadow-2xl transition-all duration-300">
                   <div className="flex items-center justify-center mb-2 md:mb-4 transition-all duration-300">
                     <div className="w-12 h-12 md:w-24 md:h-24 bg-gray-800/50 rounded-xl md:rounded-2xl flex items-center justify-center p-2 md:p-3 transition-all duration-300">
-                      <img 
-                        src={activeSponsor.logo} 
-                        alt={activeSponsor.name}
-                        className="w-full h-full object-contain transition-all duration-300"
-                      />
+                      {activeSponsor.logo ? (
+                        <img
+                          src={activeSponsor.logo}
+                          alt={activeSponsor.name}
+                          className="w-full h-full object-contain transition-all duration-300"
+                        />
+                      ) : (
+                        <TextLogo name={activeSponsor.name} isActive={true} />
+                      )}
                     </div>
                   </div>
-                  
-                  {/* Company name */}
-                  <h3 className="text-sm md:text-2xl font-bold text-center mb-1 md:mb-3 bg-gradient-to-r from-white via-blue-200 to-white bg-clip-text text-transparent transition-all duration-300" style={{ fontFamily: 'Orbitron, sans-serif' }}>
+
+                  <h3
+                    className="text-sm md:text-2xl font-bold text-center mb-1 md:mb-3 bg-gradient-to-r from-white via-blue-200 to-white bg-clip-text text-transparent transition-all duration-300"
+                    style={{ fontFamily: 'Orbitron, sans-serif' }}
+                  >
                     {activeSponsor.name}
                   </h3>
-                  
-                  {/* Description */}
-                  <p className="text-[10px] md:text-sm text-gray-400 leading-relaxed text-center transition-all duration-300" style={{ fontFamily: 'Rajdhani, sans-serif' }}>
+
+                  <p
+                    className="text-[10px] md:text-sm text-gray-400 leading-relaxed text-center transition-all duration-300"
+                    style={{ fontFamily: 'Rajdhani, sans-serif' }}
+                  >
                     {activeSponsor.description}
                   </p>
-                  
+
                 </div>
               </div>
             </div>
           ) : (
+            /* Mobile list */
             <div className="flex flex-col gap-4">
               {sponsors.map((sponsor, index) => (
-                <div key={sponsor.name} className="flex gap-4 items-start bg-gray-900/60 border border-white/5 rounded-2xl p-4">
+                <a
+                  key={sponsor.name}
+                  href={sponsor.website}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex gap-4 items-start bg-gray-900/60 border border-white/5 rounded-2xl p-4 hover:border-blue-400/30 hover:bg-gray-800/60 transition-all duration-300"
+                >
                   <div className="w-20 h-20 flex-shrink-0 flex items-center justify-center bg-gray-800/30 rounded-md p-2">
-                    <img src={sponsor.logo} alt={sponsor.name} className="w-full h-full object-contain" />
+                    {sponsor.logo ? (
+                      <img src={sponsor.logo} alt={sponsor.name} className="w-full h-full object-contain" />
+                    ) : (
+                      <TextLogo name={sponsor.name} isActive={false} />
+                    )}
                   </div>
                   <div>
                     <h4 className="font-bold text-white" style={{ fontFamily: 'Orbitron, sans-serif' }}>{sponsor.name}</h4>
                     <p className="text-gray-400 text-sm" style={{ fontFamily: 'Rajdhani, sans-serif' }}>{sponsor.description}</p>
                   </div>
-                </div>
+                </a>
               ))}
             </div>
           )}
