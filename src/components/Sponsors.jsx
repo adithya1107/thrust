@@ -42,14 +42,14 @@ const Sponsors = () => {
       logo: "https://pub-5e90a2f5e8c44905a47c1b15177024fe.r2.dev/public/sponsors/Funique-Logo.png",
       description: "Funique Composites is a leading provider of advanced composite materials and solutions for aerospace, automotive, and industrial applications. With a focus on innovation and sustainability, Funique delivers high-performance composites that enable lighter, stronger, and more efficient products across various industries.",
       angle: 257,
-      website: "https://www.funiquecomposites.com",
+      website: "",
     },
     {
       name: "RC Engineering Works",
       logo: null,
       description: "RC Engineering Works is a premier provider of precision engineering services and solutions for the aerospace, defense, and industrial sectors. With a commitment to quality and innovation, RC Engineering Works delivers custom machining, fabrication, and assembly services that meet the highest standards of performance and reliability.",
       angle: 308.4,
-      website: "https://www.rcengineeringworks.com",
+      website: "",
     }
   ];
 
@@ -74,7 +74,7 @@ const Sponsors = () => {
 
   const activeSponsor = sponsors[hoveredIndex !== null ? hoveredIndex : activeIndex];
   const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
-  const radius = isMobile ? 140 : 340;
+  const radius = isMobile ? 160 : 390;
 
   const handleSponsorClick = (sponsor, index) => {
     setActiveIndex(index);
@@ -84,14 +84,18 @@ const Sponsors = () => {
   };
 
   // Styled text logo for sponsors without an image
-  const TextLogo = ({ name, isActive }) => {
+  // Accepts optional customInitials, customSuffix, and large (bool) to scale up
+  const TextLogo = ({ name, isActive, customInitials, customSuffix, large }) => {
     const words = name.split(' ');
-    // Split into initials block + rest
-    const initials = words.map(w => w[0]).join('');
-    const shortName = words.length > 2
-      ? words.slice(0, -1).join(' ')
-      : words[0];
-    const suffix = words[words.length - 1].toUpperCase();
+    const initials = customInitials ?? words.map(w => w[0]).join('');
+    const suffix = customSuffix ?? words[words.length - 1].toUpperCase();
+
+    const initialsSize = large
+      ? (isMobile ? '26px' : '32px')
+      : (isMobile ? '18px' : '22px');
+    const suffixSize = large
+      ? (isMobile ? '9px' : '11px')
+      : (isMobile ? '7px' : '8px');
 
     return (
       <div
@@ -108,7 +112,7 @@ const Sponsors = () => {
         <div
           style={{
             fontFamily: 'Orbitron, sans-serif',
-            fontSize: isMobile ? '18px' : '22px',
+            fontSize: initialsSize,
             fontWeight: 900,
             letterSpacing: '0.12em',
             color: isActive ? '#60a5fa' : '#94a3b8',
@@ -129,11 +133,11 @@ const Sponsors = () => {
             transition: 'background 0.3s',
           }}
         />
-        {/* Last word as small label */}
+        {/* Bottom label */}
         <div
           style={{
             fontFamily: 'Rajdhani, sans-serif',
-            fontSize: isMobile ? '7px' : '8px',
+            fontSize: suffixSize,
             fontWeight: 600,
             letterSpacing: '0.18em',
             color: isActive ? '#93c5fd' : '#64748b',
@@ -145,6 +149,14 @@ const Sponsors = () => {
         </div>
       </div>
     );
+  };
+
+  // Helper to resolve TextLogo props per sponsor
+  const getTextLogoProps = (sponsor) => {
+    if (sponsor.name === 'RC Engineering Works') {
+      return { customInitials: 'RC', customSuffix: 'WORKS', large: true };
+    }
+    return {};
   };
 
   return (
@@ -207,12 +219,13 @@ const Sponsors = () => {
                           className={`w-auto object-contain transition-all duration-500 ${
                             sponsor.name === "MAHE" ? "h-14 md:h-28" :
                             sponsor.name === "easyEDA" || sponsor.name === "JCLPCB" ? "h-10 md:h-24" :
+                            sponsor.name === "Funique Composites" ? "h-10 md:h-20" :
                             "h-6 md:h-16"
                           } ${isActive ? "brightness-125" : "brightness-90 hover:brightness-110"}`}
                         />
                       ) : (
-                        <div className="h-6 md:h-16 flex items-center justify-center" style={{ minWidth: isMobile ? '48px' : '80px' }}>
-                          <TextLogo name={sponsor.name} isActive={isActive} />
+                        <div className="h-10 md:h-20 flex items-center justify-center" style={{ minWidth: isMobile ? '56px' : '90px' }}>
+                          <TextLogo name={sponsor.name} isActive={isActive} {...getTextLogoProps(sponsor)} />
                         </div>
                       )}
                     </button>
@@ -232,7 +245,7 @@ const Sponsors = () => {
                           className="w-full h-full object-contain transition-all duration-300"
                         />
                       ) : (
-                        <TextLogo name={activeSponsor.name} isActive={true} />
+                        <TextLogo name={activeSponsor.name} isActive={true} {...getTextLogoProps(activeSponsor)} />
                       )}
                     </div>
                   </div>
@@ -269,7 +282,7 @@ const Sponsors = () => {
                     {sponsor.logo ? (
                       <img src={sponsor.logo} alt={sponsor.name} className="w-full h-full object-contain" />
                     ) : (
-                      <TextLogo name={sponsor.name} isActive={false} />
+                      <TextLogo name={sponsor.name} isActive={false} {...getTextLogoProps(sponsor)} />
                     )}
                   </div>
                   <div>
