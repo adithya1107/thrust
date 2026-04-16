@@ -74,7 +74,7 @@ const Sponsors = () => {
 
   const activeSponsor = sponsors[hoveredIndex !== null ? hoveredIndex : activeIndex];
   const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
-  const radius = isMobile ? 160 : 390;
+  const radius = isMobile ? 160 : 370;
 
   const handleSponsorClick = (sponsor, index) => {
     setActiveIndex(index);
